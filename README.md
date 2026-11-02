@@ -4,6 +4,8 @@ Un remake făcut de un fan după jocul flash „Ultimate Football Management 13-
 
 **Joacă aici:** https://seress26.github.io/Ultimate-Football-Manager-2026/
 
+**Versiunea curentă: 1.5.1** — optimizată pentru iPhone 14 Pro: nimic sub Dynamic Island, butoanele de jos deasupra barei iPhone-ului, butoane mai mari, ecran de pornire cu logo. Versiunea apare jos pe ecranul de titlu al jocului.
+
 ## Pe iPhone, ca aplicație (și fără internet)
 
 1. Deschide adresa de mai sus în **Safari**.
@@ -12,7 +14,7 @@ Un remake făcut de un fan după jocul flash „Ultimate Football Management 13-
 
 Salvările rămân pe telefon, în aplicația de pe ecranul principal (separat de Safari). Ca să muți o carieră de pe alt dispozitiv: *OPȚIUNI → Exportă salvarea într-un fișier*, apoi pe telefon *ÎNCARCĂ JOC → Importă salvare din fișier*. Dacă ștergi aplicația de pe ecranul principal, se șterg și salvările din ea, așa că exportă-le înainte.
 
-Când apare o versiune nouă, deschide aplicația o dată cu internet; la următoarea pornire rulează versiunea nouă.
+Când apare o versiune nouă, deschide jocul cu internet: se încarcă direct versiunea nouă (dacă vezi încă versiunea veche, închide aplicația complet și deschide-o din nou).
 
 ## Ce conține
 
