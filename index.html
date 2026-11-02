@@ -1018,6 +1018,27 @@ body.m .chg > .hdr { background: linear-gradient(180deg, #1d4f9e, #0b2559); }
   body.m .ev-hints { font-size: 12px; margin-top: 6px; gap: 3px; }
 }
 
+/* ------------------------------------------------------------------ v1.6: automatic helpers, credit */
+.tac-list.has-auto .tac-rows { bottom: 112px; }
+.tac-auto { position: absolute; left: 10px; right: 10px; bottom: 60px; display: flex; gap: 10px; }
+.auto-tg { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 6px 12px; min-height: 44px; border-radius: 12px;
+  border: 1.5px solid rgba(160, 200, 255, .35); background: rgba(4, 18, 50, .75); color: #cfe3ff; font: inherit; text-align: left; cursor: pointer; transition: background .15s, border-color .15s; }
+.auto-tg:hover { border-color: rgba(160, 200, 255, .7); }
+.auto-tg .sw { flex: 0 0 38px; width: 38px; height: 22px; border-radius: 11px; background: #3a4a6a; position: relative; transition: background .15s; }
+.auto-tg .sw i { position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #dfe8f7; transition: left .15s; box-shadow: 0 1px 2px rgba(0, 0, 0, .5); }
+.auto-tg .tx { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.auto-tg .tx b { font-size: 13.5px; color: #fff; }
+.auto-tg .tx small { font-size: 11px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.auto-tg.on { border-color: rgba(70, 224, 123, .75); background: rgba(16, 70, 40, .55); }
+.auto-tg.on .sw { background: #2fbf63; }
+.auto-tg.on .sw i { left: 19px; }
+body.m .tac-auto { position: static; margin: 8px 0 0; }
+body.m .auto-tg { padding: 8px 10px; gap: 8px; }
+body.m .auto-tg .tx small { white-space: normal; }
+.pm-auto { padding-top: 6px; }
+.title-menu .made-by { margin-top: 2px; text-align: center; font-size: 17px; font-weight: 800; letter-spacing: .3px; color: #ffd23f; text-shadow: 0 2px 0 #0b2a6b, 0 2px 8px rgba(0, 0, 0, .7); }
+body.m .title-menu .made-by { font-size: 16px; margin-top: 4px; }
+
 </style>
 </head>
 <body>
@@ -2087,6 +2108,49 @@ window.UFM_NAMES = {
 
 </script>
 <script>
+/* Ultimate Football Management 26-27 — texts added in v1.6 (automatic assistant and rotation, credits) */
+(function (W) {
+  'use strict';
+  var S = W.UFM.i18n.S;
+  var X = {
+    en: {
+      made_by: 'Made by Artur with ♥️',
+      auto_ins: 'Auto assistant', auto_ins_h: 'instructions for each opponent',
+      auto_rot: 'Auto rotation', auto_rot_h: 'rests tired players',
+      auto_ins_on: 'Your assistant will choose the instructions before every match.',
+      auto_ins_off: 'The instructions stay exactly as you set them.',
+      auto_rot_on: 'Tired players will rest when a fresh replacement is almost as good. Your line-up comes back once they recover.',
+      auto_rot_off: 'Your line-up stays exactly as you set it (injured or suspended players are still replaced).',
+      pm_auto_ins: 'Auto assistant: instructions chosen for this opponent',
+      pm_rot: 'Rotation: {o} ({f}% fit) rests, {i} starts',
+      pm_rot_more: '+{n} more changes',
+      n_v16_auto: 'New: the auto assistant and auto rotation are on. You can switch them off in Tactics.',
+      ins_auto: 'Auto assistant: choose the instructions before every match'
+    },
+    ro: {
+      made_by: 'Făcut de Artur cu ♥️',
+      auto_ins: 'Secund automat', auto_ins_h: 'instrucțiuni alese pe adversar',
+      auto_rot: 'Rotație automată', auto_rot_h: 'odihnește jucătorii obosiți',
+      auto_ins_on: 'Secundul va alege instrucțiunile înaintea fiecărui meci.',
+      auto_ins_off: 'Instrucțiunile rămân exact cum le-ai setat tu.',
+      auto_rot_on: 'Jucătorii obosiți vor fi odihniți când un înlocuitor odihnit e aproape la fel de bun. Echipa ta revine după ce se refac.',
+      auto_rot_off: 'Echipa rămâne exact cum ai ales-o (accidentații și suspendații sunt înlocuiți în continuare).',
+      pm_auto_ins: 'Secund automat: instrucțiuni alese pentru acest adversar',
+      pm_rot: 'Rotație: {o} ({f}% condiție) se odihnește, joacă {i}',
+      pm_rot_more: 'încă {n} schimbări',
+      n_v16_auto: 'Nou: secundul automat și rotația automată sunt pornite. Le poți opri din Tactică.',
+      ins_auto: 'Secund automat: alege instrucțiunile înaintea fiecărui meci'
+    }
+  };
+  X.en.credits_text = '<p style="font-size:17px;text-align:center"><b>Made by Artur with ♥️</b></p>' + S.en.credits_text;
+  X.ro.credits_text = '<p style="font-size:17px;text-align:center"><b>Făcut de Artur cu ♥️</b></p>' + S.ro.credits_text;
+  X.en.how_text = S.en.how_text + '<p><b>Automatic helpers (v1.6).</b> In Tactics you can switch on the <b>auto assistant</b> (it picks the team instructions against every opponent — the computer\'s clubs study you before each match, so this matters a lot) and <b>auto rotation</b> (tired players rest when a fresh replacement is almost as good; your own line-up comes back once they recover; the board\'s star always plays).</p><p style="text-align:center"><b>Made by Artur with ♥️</b></p>';
+  X.ro.how_text = S.ro.how_text + '<p><b>Ajutoare automate (v1.6).</b> Din Tactică poți porni <b>secundul automat</b> (alege instrucțiunile de echipă pentru fiecare adversar — echipele calculatorului te studiază înaintea fiecărui meci, deci contează mult) și <b>rotația automată</b> (jucătorii obosiți se odihnesc când un înlocuitor odihnit e aproape la fel de bun; echipa ta revine după ce se refac; vedeta conducerii joacă mereu).</p><p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>';
+  Object.keys(X).forEach(function (l) { for (var k in X[l]) S[l][k] = X[l][k]; });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* Ultimate Football Management 26-27 — utilities */
 (function (W) {
   'use strict';
@@ -2463,7 +2527,8 @@ window.UFM_NAMES = {
       pools: {}, foreign: DB.foreign.slice(), freeAgents: [],
       stats: { streakW: 0, streakCS: 0, seasons: 0, totalSpent: 0, bestWin: 0 },
       opts: { speed: 2, alerts: { ht: true, goal: true, inj: true, red: true, yel: false }, msgs: 'full' },
-      score: 0, pendingOffers: [], lastResults: null, log: []
+      score: 0, pendingOffers: [], lastResults: null, log: [],
+      auto: { ins: true, rot: true } // v1.6: the assistant's instructions and the rotation of tired players
     };
     var f = DB.teamFields;
     var byIdx = [];
@@ -2729,6 +2794,40 @@ window.UFM_NAMES = {
     return changed;
   }
 
+  // the user's automatic helpers (v1.6): ins = the assistant picks the instructions before every match,
+  // rot = tired players rest when a fresh replacement is almost as good
+  function autoOpts() { if (!G.auto) G.auto = { ins: false, rot: false }; return G.auto; }
+  var ROT_TIRED = 80, ROT_GK = 65, ROT_FRESH = 88, ROT_KEEP = 0.95;
+  function rotateUser(t) {
+    var tc = t.tac, slots = M.FORMATIONS[tc.f];
+    // the line-up the user chose comes back once the tired (or injured) players are ready again;
+    // a line-up changed by the user since the last rotation becomes the new reference
+    var untouched = tc.rotXi && tc.xi && tc.rotF === tc.f && tc.rotXi.length === tc.xi.length && tc.rotXi.every(function (id, i) { return id === tc.xi[i]; });
+    if (untouched && tc.pref && tc.pref.length === slots.length) tc.xi = tc.pref.slice();
+    else tc.pref = (tc.xi || []).slice();
+    validateLineup(t);
+    var star = UFM.career && UFM.career.boardStar ? UFM.career.boardStar() : null;
+    var inXI = {}; tc.xi.forEach(function (id) { if (id) inXI[id] = 1; });
+    var log = [];
+    tc.xi.forEach(function (pid, i) {
+      var p = G.players[pid], role = slots[i][0];
+      if (!p || pid === star || p.fit >= (role === 'GK' ? ROT_GK : ROT_TIRED)) return;
+      var pv = M.slotRating(p, role) * condFactor(p), best = null, bv = 0;
+      squad(t).forEach(function (c) {
+        if (inXI[c.id] || !available(c) || c.fit < ROT_FRESH || (role === 'GK') !== (c.r === 'GK')) return;
+        var v = M.slotRating(c, role) * condFactor(c);
+        if (v > bv) { bv = v; best = c; }
+      });
+      if (!best || bv < pv * ROT_KEEP) return;
+      tc.xi[i] = best.id; inXI[best.id] = 1; delete inXI[pid];
+      var si = (tc.sub || []).indexOf(best.id);
+      if (si >= 0) tc.sub[si] = pid;
+      log.push({ o: pid, i: best.id, f: Math.round(p.fit) });
+    });
+    tc.rotXi = tc.xi.slice(); tc.rotF = tc.f; tc.rotLog = log;
+    return log;
+  }
+
   // team strength summary from the current XI
   function strength(t) {
     var slots = M.FORMATIONS[t.tac.f];
@@ -2753,7 +2852,7 @@ window.UFM_NAMES = {
   UFM.game = {
     newGame: newGame, team: team, player: player, squad: squad, available: available, condFactor: condFactor,
     chooseFormation: chooseFormation, formationFits: formationFits, adoptBoardSystem: adoptBoardSystem, pickLineup: pickLineup, pickSubs: pickSubs, assign: assign,
-    validateLineup: validateLineup, strength: strength, topPlayers: topPlayers, makeTeam: makeTeam, generateSquad: generateSquad, addMissingLeagues: addMissingLeagues
+    validateLineup: validateLineup, autoOpts: autoOpts, rotateUser: rotateUser, strength: strength, topPlayers: topPlayers, makeTeam: makeTeam, generateSquad: generateSquad, addMissingLeagues: addMissingLeagues
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -4836,8 +4935,10 @@ window.UFM_NAMES = {
   // ------------------------------------------------------------------ AI pre-match
   function prepareTeam(t, oppo, home) {
     if (t.user) {
-      UFM.game.validateLineup(t);
-      if (t.tac.auto && oppo) { try { t.tac.ins = UFM.tactics.bestFor(t, oppo, home !== false); } catch (e) { /* keep the plan */ } }
+      var au = UFM.game.autoOpts();
+      if (au.rot) UFM.game.rotateUser(t); else { t.tac.rotLog = null; UFM.game.validateLineup(t); }
+      t.tac.autoIns = false;
+      if ((au.ins || t.tac.auto) && oppo) { try { t.tac.ins = UFM.tactics.bestFor(t, oppo, home !== false); t.tac.autoIns = true; } catch (e) { /* keep the plan */ } }
       return;
     }
     UFM.transfers.ensureKeeper(t);
@@ -5505,9 +5606,25 @@ window.UFM_NAMES = {
   //  never the same pair as last season and, when possible, two new ones)
   var ULTRA_DEF = { '4-5-1': 1, '5-4-1': 1 };
   function twins(a, b) { return (a === '4-3-3' && b === '4-3-3 (attack)') || (b === '4-3-3' && a === '4-3-3 (attack)'); }
-  function pickSystems(t, rnd, last) {
+  // the board's star: the best player of the club under 32 (not about to retire)
+  function pickStar(t) { return UFM.game.topPlayers(t, 4).filter(function (p) { return !p.ret && p.a <= 31; })[0] || null; }
+  // the star's best rating among the positions of a formation
+  function starFit(star, f) { var b = 0; M.FORMATIONS[f].forEach(function (s) { var v = M.slotRating(star, s[0]); if (v > b) b = v; }); return b; }
+  // v1.6: formations that have the star's position (he plays there at full strength, at most 1 point less)
+  function starFormations(star, list) {
+    var full = M.slotRating(star, star.r);
+    return list.filter(function (f) { return starFit(star, f) >= full - 1; });
+  }
+  function fitsStar(star, f) { return !star || starFormations(star, [f]).length === 1; }
+  function pickSystems(t, rnd, last, star) {
     var all = M.FORMATION_KEYS.slice();
     if (t.rep >= 70) all = all.filter(function (f) { return !ULTRA_DEF[f]; });
+    if (star) {
+      var ok = starFormations(star, all);
+      if (ok.length < 2) ok = starFormations(star, M.FORMATION_KEYS.slice());
+      if (ok.length < 2) ok = M.FORMATION_KEYS.slice().sort(function (a, b) { return starFit(star, b) - starFit(star, a); }).slice(0, 3);
+      all = ok;
+    }
     var fits = UFM.game.formationFits(t);
     function w(f) { var i = fits.indexOf(f); return i < 4 ? 1.3 : i < 8 ? 1 : 0.7; }
     function pick(list) {
@@ -5519,7 +5636,9 @@ window.UFM_NAMES = {
     var a, b;
     for (var tries = 0; tries < 40; tries++) {
       a = pick(all);
-      b = pick(all.filter(function (f) { return f !== a && !twins(a, f); }));
+      var rest = all.filter(function (f) { return f !== a && !twins(a, f); });
+      if (!rest.length) rest = all.filter(function (f) { return f !== a; });
+      b = pick(rest);
       var ov = last ? (last.indexOf(a) >= 0 ? 1 : 0) + (last.indexOf(b) >= 0 ? 1 : 0) : 0;
       if (ov === 0 || (ov === 1 && tries >= 15)) break;
     }
@@ -5564,8 +5683,9 @@ window.UFM_NAMES = {
     }
     // 3. the system the board wants to see (extremely important) and the club's star
     if (L) {
-      list.push({ id: 'sys', kind: 'system', list: pickSystems(t, R2, opts && opts.last), target: 75, w: 3 });
-      var star = UFM.game.topPlayers(t, 4).filter(function (p) { return !p.ret && p.a <= 31; })[0];
+      // the star first: both systems must have a place for him (v1.6)
+      var star = pickStar(t);
+      list.push({ id: 'sys', kind: 'system', list: pickSystems(t, R2, opts && opts.last, star), target: 75, w: 3 });
       if (star) list.push({ id: 'star', kind: 'star', pid: star.id, name: star.n, target: 70, w: 2 });
     }
     // 4. transfers and squad (v1.4: harder targets, the main one plus two more)
@@ -6105,6 +6225,24 @@ window.UFM_NAMES = {
     var h = m.hist, a = h[Math.max(0, h.length - 1 - (n || 5))].r;
     return Math.round((m.rep - a) * 10) / 10;
   }
+  // v1.6: a save whose board systems leave no place for the star: the systems that do not fit are replaced
+  // (matches already played keep counting; the board explains it in a message)
+  function fixStarSystems() {
+    var g = G(), o = g.obj; if (!o || o.team !== g.userTeam || !o.list) return false;
+    var sy = objOf('system'), st = objOf('star');
+    if (!sy || !st) return false;
+    var t = g.teams[o.team], star = g.players[st.pid];
+    if (!star || star.t !== t.id || !sy.list || sy.list.every(function (f) { return fitsStar(star, f); })) return false;
+    var R2 = U.seeded(t.id + ':' + g.season + ':' + (g.salt || 0) + ':v16');
+    var keep = sy.list.filter(function (f) { return fitsStar(star, f); });
+    var fresh = pickSystems(t, R2, null, star);
+    if (keep.length) { var other = fresh.filter(function (f) { return f !== keep[0] && !twins(f, keep[0]); })[0] || fresh.filter(function (f) { return f !== keep[0]; })[0]; if (other) fresh = [keep[0], other]; }
+    sy.list = fresh;
+    g.sysLast = { team: t.id, list: fresh.slice() };
+    if (!o.sys || !o.sys.n) UFM.game.adoptBoardSystem(t);
+    briefNews();
+    return true;
+  }
   // a save from v1.3: the board adds its system and its star for the rest of the season
   function upgradeObjectives() {
     var g = G(), o = g.obj; if (!o || o.team !== g.userTeam) return;
@@ -6112,8 +6250,8 @@ window.UFM_NAMES = {
     var t = g.teams[o.team], L = g.leagues[t.lg]; if (!L) return;
     var R2 = U.seeded(t.id + ':' + g.season + ':' + (g.salt || 0));
     var at = o.list[0] && o.list[0].id === 'pos' ? 1 : 0;
-    var add = [{ id: 'sys', kind: 'system', list: pickSystems(t, R2), target: 75, w: 3 }];
-    var star = UFM.game.topPlayers(t, 4).filter(function (p) { return !p.ret && p.a <= 31; })[0];
+    var star = pickStar(t);
+    var add = [{ id: 'sys', kind: 'system', list: pickSystems(t, R2, null, star), target: 75, w: 3 }];
     if (star) add.push({ id: 'star', kind: 'star', pid: star.id, name: star.n, target: 70, w: 2 });
     o.list = o.list.filter(function (x) { return x.kind !== 'keep_star'; });
     o.list.splice.apply(o.list, [at, 0].concat(add));
@@ -6125,7 +6263,7 @@ window.UFM_NAMES = {
 
   UFM.career = {
     boardSystems: boardSystems, boardStar: boardStar, isBoardStar: isBoardStar, onUserMatch: onUserMatch, mgrDelta: mgrDelta, mgrTrend: mgrTrend,
-    upgradeObjectives: upgradeObjectives, expPts: expPts, pickSystems: pickSystems, objEvents: objEvents, playedFrac: playedFrac,
+    upgradeObjectives: upgradeObjectives, fixStarSystems: fixStarSystems, starFormations: starFormations, fitsStar: fitsStar, expPts: expPts, pickSystems: pickSystems, objEvents: objEvents, playedFrac: playedFrac,
     sackNow: sackNow, takeJobMid: takeJobMid, answerJobOffer: answerJobOffer, midOffers: midOffers,
     makeObjectives: makeObjectives, setObjectives: setObjectives, evaluate: evaluate, onTransfer: onTransfer,
     seasonVerdict: seasonVerdict, takeJob: takeJob, score: score, weakestRole: weakestRole, expectedRank: expectedRank, noteExpectations: noteExpectations,
@@ -6730,6 +6868,15 @@ window.UFM_NAMES = {
       else if (UFM.career.upgradeObjectives) UFM.career.upgradeObjectives();
       if (!o.mgr.hist) o.mgr.hist = [{ s: o.season, r: o.mgr.rep, n: 1 }];
       if (o.mgr.s0 === undefined) o.mgr.s0 = o.mgr.rep;
+      // v1.6: the board's systems always have a place for the star
+      if (UFM.career.fixStarSystems) { try { UFM.career.fixStarSystems(); } catch (e) { /* keep the old objectives */ } }
+    }
+    // v1.6: the assistant's instructions and the rotation of tired players, switched on once for older saves
+    if (!o.auto) {
+      var ut0 = o.teams[o.userTeam];
+      o.auto = { ins: true, rot: true };
+      if (ut0 && ut0.tac) delete ut0.tac.auto;
+      if (UFM.season && o.news) UFM.season.addNews('v16_auto');
     }
     Object.keys(o.teams).forEach(function (id) { var tm = o.teams[id]; if (tm.tac && tm.tac._fix) { delete tm.tac._fix; UFM.game.chooseFormation(tm); UFM.game.pickLineup(tm); } });
     return o;
@@ -7513,10 +7660,11 @@ window.UFM_NAMES = {
         el('button', { class: 'btn red', disabled: !any, onclick: function () {
           ui.confirm(t('clear_q'), function () { UFM.save.clearAll(); ui.refresh(); ui.toast(U.esc(t('saves_cleared')), 'info'); });
         } }, t('clear_saves'))
-      ])
+      ]),
+      el('div', { class: 'made-by' }, t('made_by'))
     ]));
     if (UFM.cloud && UFM.cloud.ready()) root.appendChild(el('div', { class: 'cloud-line', style: ui.abs({ position: 'absolute', left: '0', right: '0', bottom: '34px', textAlign: 'center', fontSize: '12.5px', color: '#cfe3ff' }) }, '☁ ' + t('cloud_on')));
-    root.appendChild(el('div', { class: 'title-foot' }, 'v1.5.1 · ' + t('foot_note')));
+    root.appendChild(el('div', { class: 'title-foot' }, 'v1.6 · ' + t('foot_note')));
   };
 
   function howTo() { ui.popup({ cls: 'wide left', title: t('how_title'), body: t('how_text'), buttons: [{ label: t('close'), cls: 'green', esc: true }] }); }
@@ -8311,6 +8459,20 @@ window.UFM_NAMES = {
   function slotRating(p, role) { return Math.round(M.slotRating(p, role)); }
   function famColor(p, role) { var f = M.familiarity(p.r, role); return f >= 1 ? '#ffffff' : f >= 0.93 ? '#ffd23f' : '#ff7a6b'; }
 
+  // v1.6: the automatic helpers (the assistant's instructions, the rotation of tired players)
+  function autoToggles(redraw) {
+    var au = UFM.game.autoOpts();
+    function tg(key, label, help) {
+      var on = !!au[key];
+      return el('button', { class: 'auto-tg' + (on ? ' on' : ''), title: help, 'aria-pressed': on ? 'true' : 'false', onclick: function () {
+        au[key] = !au[key]; ui.sound('click'); UFM.save.autosave();
+        ui.toast(UFM.util.esc(t(au[key] ? 'auto_' + key + '_on' : 'auto_' + key + '_off')), 'info', 3200);
+        redraw();
+      } }, [el('span', { class: 'sw' }, el('i')), el('span', { class: 'tx' }, [el('b', null, label), el('small', null, help)])]);
+    }
+    return el('div', { class: 'tac-auto' }, [tg('ins', t('auto_ins'), t('auto_ins_h')), tg('rot', t('auto_rot'), t('auto_rot_h'))]);
+  }
+
   function render(box, E, tm, opts) {
     box.innerHTML = '';
     var slots = M.FORMATIONS[E.f];
@@ -8328,6 +8490,8 @@ window.UFM_NAMES = {
       el('label', { class: 'ctl' }, [t('formation'), fSel]), el('label', { class: 'ctl' }, [t('mentality'), mSel]), el('label', { class: 'ctl' }, [t('style'), sSel]), insBtn,
       E.mode === 'match' ? el('span', { class: 'ctl', style: { marginLeft: 'auto', color: '#fff' } }, t('subs_left', { n: E.subsLeft - pendingIns(E).length })) : el('span', { style: { marginLeft: 'auto', fontSize: '12px' }, class: 'sub' }, t('style_help_' + E.s))
     ]));
+    var showAuto = E.mode === 'team' && tm.user;
+    if (showAuto && ui.mobile) box.appendChild(autoToggles(function () { render(box, E, tm, opts); }));
     // the systems the board asked for
     var ban = boardSys ? ui.sysBanner(E.f) : null;
     if (ban) box.appendChild(ban);
@@ -8399,6 +8563,7 @@ window.UFM_NAMES = {
       }
     }
     list.appendChild(rows);
+    if (showAuto && !ui.mobile) { list.classList.add('has-auto'); list.appendChild(autoToggles(function () { render(box, E, tm, opts); })); }
     var btns = el('div', { class: 'tac-btns' }, [
       el('button', { class: 'btn red', onclick: function () { opts.undo(); } }, t('undo')),
       E.mode === 'team' ? el('button', { class: 'btn gold', onclick: function () { autofill(E, tm); E.sel = null; ui.sound('click'); render(box, E, tm, opts); } }, t('autofill')) : null,
@@ -8517,7 +8682,7 @@ window.UFM_NAMES = {
     draw();
     var foot = null;
     if (E.mode === 'team') {
-      var cb = el('input', { type: 'checkbox', id: 'ins-auto', checked: !!tm.tac.auto, onchange: function () { tm.tac.auto = this.checked; UFM.save.autosave(); } });
+      var cb = el('input', { type: 'checkbox', id: 'ins-auto', checked: !!UFM.game.autoOpts().ins, onchange: function () { UFM.game.autoOpts().ins = this.checked; delete tm.tac.auto; UFM.save.autosave(); } });
       foot = el('label', { class: 'ins-auto', for: 'ins-auto' }, [cb, t('ins_auto')]);
     }
     var wrap = el('div', null, [body, foot]);
@@ -9208,7 +9373,12 @@ window.UFM_NAMES = {
     var oppT = home.id === me ? away : home;
     mid.appendChild(el('div', { class: 'pm-scout' }, [el('b', null, t('scout_title') + ': '), t('scout_line', { t: oppT.short, f: ui.fname(oppT.tac.f), i: ui.insSummary(oppT.tac.ins).toLowerCase() })]));
     var gap = ui.planGap(ut);
-    if (gap !== null) mid.appendChild(el('div', { class: 'pm-scout ' + (gap < 0.04 ? 'good' : 'bad') }, gap < 0.04 ? t('pm_plan_ok') : t('pm_plan_gap', { v: gap.toFixed(2) })));
+    // v1.6: what the automatic helpers did for this match
+    var autoOk = ut.tac.autoIns && (gap === null || gap < 0.04);
+    if (autoOk) mid.appendChild(el('div', { class: 'pm-scout good pm-auto' }, '🤖 ' + t('pm_auto_ins')));
+    var rl = (ut.tac.rotLog || []).filter(function (x) { return ut.tac.xi.indexOf(x.i) >= 0 && g.players[x.o] && g.players[x.i]; });
+    if (rl.length) mid.appendChild(el('div', { class: 'pm-scout pm-auto' }, '🔄 ' + t('pm_rot', { o: ui.sname(g.players[rl[0].o].n), f: rl[0].f, i: ui.sname(g.players[rl[0].i].n) }) + (rl.length > 1 ? ' · ' + t('pm_rot_more', { n: rl.length - 1 }) : '')));
+    if (gap !== null && !autoOk) mid.appendChild(el('div', { class: 'pm-scout ' + (gap < 0.04 ? 'good' : 'bad') }, gap < 0.04 ? t('pm_plan_ok') : t('pm_plan_gap', { v: gap.toFixed(2) })));
 
     mid.appendChild(el('div', { class: 'c', style: { paddingTop: '6px' } }, el('button', { class: 'btn small gold', onclick: function () { ui.sound('click'); ui.teamInstructions(ut, function () { ui.refresh(); }); } }, '⚙ ' + t('instructions'))));
     var slots0 = M.FORMATIONS[ut.tac.f], gkIdx = slots0.map(function (x) { return x[0]; }).indexOf('GK');

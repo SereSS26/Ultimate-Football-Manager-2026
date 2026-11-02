@@ -2,9 +2,11 @@
 
 Un remake făcut de un fan după jocul flash „Ultimate Football Management 13-14”, cu echipele și jucătorii din sezonul 2026-27. Totul e într-o singură pagină (`index.html`) și merge fără internet.
 
+**Făcut de Artur cu ♥️**
+
 **Joacă aici:** https://seress26.github.io/Ultimate-Football-Manager-2026/
 
-**Versiunea curentă: 1.5.1** — optimizată pentru iPhone 14 Pro: nimic sub Dynamic Island, butoanele de jos deasupra barei iPhone-ului, butoane mai mari, ecran de pornire cu logo. Versiunea apare jos pe ecranul de titlu al jocului.
+**Versiunea curentă: 1.6** — secund automat (alege instrucțiunile pentru fiecare adversar) și rotație automată (odihnește jucătorii obosiți), ambele pornite din oficiu și reglabile din Tactică; sistemele impuse de conducere au mereu postul vedetei clubului. Versiunea apare jos pe ecranul de titlu al jocului.
 
 ## Pe iPhone, ca aplicație (și fără internet)
 
