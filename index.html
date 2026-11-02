@@ -1039,6 +1039,31 @@ body.m .auto-tg .tx small { white-space: normal; }
 .title-menu .made-by { margin-top: 2px; text-align: center; font-size: 17px; font-weight: 800; letter-spacing: .3px; color: #ffd23f; text-shadow: 0 2px 0 #0b2a6b, 0 2px 8px rgba(0, 0, 0, .7); }
 body.m .title-menu .made-by { font-size: 16px; margin-top: 4px; }
 
+/* ------------------------------------------------------------------ v1.7: mentality & style rows, auto training, negotiation, not for sale */
+.ins-row.big { flex-direction: column; align-items: stretch; gap: 6px; }
+.ins-row.big .ins-lbl { flex: 0 0 auto; }
+.ins-row.big .ins-seg { flex-wrap: wrap; }
+.ins-row.big .ins-seg .btn { min-width: 0; flex: 1 1 92px; }
+.tr-top .tr-auto { flex: 0 0 auto; width: 250px; }
+.tr-top.auto .seg, .tr-top.auto .tr-all, .tr-top.auto > .btn.small { opacity: .55; }
+.ans-acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.ans-row .ans-acts .btn { white-space: nowrap; }
+.sq-flag.nfs { background: transparent; padding: 0 2px; }
+.nfs-line { color: #9cc4ff; }
+.pc-btns .nfs-btn.sel, .popup-btns .nfs-btn.sel { box-shadow: 0 0 0 2px #9cc4ff inset; }
+body.m .tr-top .tr-auto { width: 100%; }
+/* v1.7: four buttons on the player card (2 x 2), long help texts clamped on the computer layout */
+.pc-btns:has(> .btn:nth-child(4)) { flex-wrap: wrap; gap: 8px; }
+.pc-btns:has(> .btn:nth-child(4)) .btn { flex: 1 1 calc(50% - 4px); min-height: 44px; font-size: 13px; }
+.pc-btns:has(> .btn:nth-child(4)) .btn small { font-size: 9.5px; }
+body:not(.m) .tac-ctl > span.sub { font-size: 10.5px !important; line-height: 1.2; max-width: 190px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+body:not(.m) .tac-ctl .ins-btn { flex: 0 0 auto; max-width: 190px; }
+body:not(.m) .tac-ctl select { max-width: 180px; }
+body:not(.m) .tr-top .help { font-size: 10.5px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+body.m .ans-row .ans-txt { flex: 1 1 calc(100% - 40px); }
+body.m .ans-row .ans-acts { flex: 1 1 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+body.m .ans-row .ans-acts .btn { width: auto; min-height: 44px; }
+
 </style>
 </head>
 <body>
@@ -2151,6 +2176,113 @@ window.UFM_NAMES = {
 
 </script>
 <script>
+/* Ultimate Football Management 26-27 — texts added in v1.7 (mentality and style that matter, automatic training,
+   negotiating the price of a player you buy, "not for sale") */
+(function (W) {
+  'use strict';
+  var S = W.UFM.i18n.S;
+  var X = {
+    en: {
+      // tactics
+      insh_m: 'Defending means fewer chances for both sides (good for the weaker team); attacking means more (good for the stronger one).',
+      insh_s: 'How well a style works depends on your players and on the opponent.',
+      an_style_good: 'Style "{s}": a good fit for your players against this opponent.',
+      an_style_ok: 'Style "{s}": an average fit for your players.',
+      an_style_bad: 'Style "{s}": a poor fit — your players are not built for it against this opponent.',
+      an_ment_weaker: 'They are about {d} points stronger: a defensive mentality keeps the game tight.',
+      an_ment_stronger: 'You are about {d} points stronger: an attacking mentality makes the difference count.',
+      an_ment_even: 'An even match: a balanced mentality is usually the safest.',
+      ins_est: "The assistant's plan is worth about {v} more points per match (estimate).",
+      pm_plan_gap: 'Assistant: another plan (instructions, mentality, style) would be worth about {v} more points per match here.',
+      pm_plan_ok: 'Assistant: your plan suits this match.',
+      pm_auto_ins: 'Auto assistant: instructions, mentality and style chosen for this opponent',
+      auto_ins_h: 'plan for each opponent',
+      auto_ins_on: 'Your assistant will choose the instructions, the mentality and the playing style before every match.',
+      ins_auto: 'Auto assistant: choose the instructions, mentality and style before every match',
+      style_help_0: 'Long balls to the strikers: works with strong, good-in-the-air forwards against weak centre-backs; skips the midfield battle.',
+      style_help_1: 'Attacks down the flanks and crosses: needs good crossers and headers; works against weak full-backs.',
+      style_help_2: 'A deep block: fewer chances for both sides; good when they are stronger and you have good tacklers and stamina.',
+      style_help_3: 'Everyone forward: more chances, but space behind; works with fast forwards who finish well against a slow defence.',
+      style_help_4: 'Shots from anywhere: only works if your midfielders and forwards can really shoot.',
+      style_help_5: 'Hard tackling: tough, strong players win the ball against technical sides; more cards.',
+      style_help_6: 'Possession with short passes: needs good passers in midfield; a pressing opponent makes it harder.',
+      // training
+      auto_tr: 'Auto training', auto_tr_h: 'the staff sets focus and intensity',
+      auto_tr_on: 'The staff will set the training of every player every week (focus on the attributes that matter most for his position, intensity by fitness, age and fixtures).',
+      auto_tr_off: 'You set the training yourself now.',
+      training_help_auto: 'Auto: young players with room to grow train hard, tired players rest before matches, veterans train lightly. Any manual change switches it off.',
+      n_v17_auto: 'New: auto training is on (Club → Training). Mentality and playing style now really matter — the assistant picks them too.',
+      // buying: the club names its price, you negotiate
+      ans_want: '{c} turned down {v} for {p}. They want {w}.',
+      ans_far_note: 'Your offer was far too low — they will not negotiate for long.',
+      neg_buy_now: '{c} now want {v} for {p}.',
+      neg_buy_text: '{c} want {w} for {p} (your last offer: {v}). How much do you offer?',
+      neg_buy_last: 'their next answer is their final price',
+      neg_buy_counter: '{c} come down to {v}.',
+      neg_buy_counter_last: '{c} make a final offer: {v}. Take it or leave it.',
+      neg_buy_ok: 'Agreed! {p} joins for {v}.',
+      neg_buy_walked: '{c} have ended the talks for {p}. You can make a new offer next round.',
+      neg_buy_walked_s: 'Talks ended', neg_buy_status: '{c} want {w} — you can pay it or negotiate.',
+      neg_send: 'OFFER', neg_give_up: 'GIVE UP', signed_for: 'Signed for {v}!', ans_squad_s: 'Squad full',
+      ans_note: 'Clubs answer in the round after your offer. If the offer is too low they tell you their price: pay it or negotiate in this round.',
+      // not for sale
+      nfs_on: 'NOT FOR SALE', nfs_off: 'FOR SALE AGAIN', nfs_sub: 'no offers for him',
+      nfs_title: 'Not for sale — no club will bid for him', nfs_set: '{p} is not for sale: no club will make an offer for him.',
+      nfs_unset: '{p} can receive offers again.'
+    },
+    ro: {
+      insh_m: 'Defensiv = mai puține ocazii pentru ambele echipe (bun pentru echipa mai slabă); ofensiv = mai multe (bun pentru cea mai puternică).',
+      insh_s: 'Cât de bine merge un stil depinde de jucătorii tăi și de adversar.',
+      an_style_good: 'Stilul „{s}”: se potrivește bine jucătorilor tăi contra acestui adversar.',
+      an_style_ok: 'Stilul „{s}”: potrivire medie cu jucătorii tăi.',
+      an_style_bad: 'Stilul „{s}”: nu se potrivește — jucătorii tăi nu sunt făcuți pentru el contra acestui adversar.',
+      an_ment_weaker: 'Ei sunt cu ~{d} puncte mai puternici: o mentalitate defensivă ține meciul strâns.',
+      an_ment_stronger: 'Tu ești cu ~{d} puncte mai puternic: o mentalitate ofensivă face diferența să conteze.',
+      an_ment_even: 'Meci echilibrat: mentalitatea echilibrată e de obicei cea mai sigură.',
+      ins_est: 'Planul secundului valorează cu aproximativ {v} puncte în plus pe meci (estimare).',
+      pm_plan_gap: 'Secundul: alt plan (instrucțiuni, mentalitate, stil) ar valora aici cam {v} puncte în plus pe meci.',
+      pm_plan_ok: 'Secundul: planul tău se potrivește pentru acest meci.',
+      pm_auto_ins: 'Secund automat: instrucțiuni, mentalitate și stil alese pentru acest adversar',
+      auto_ins_h: 'plan ales pe adversar',
+      auto_ins_on: 'Secundul va alege instrucțiunile, mentalitatea și stilul de joc înaintea fiecărui meci.',
+      ins_auto: 'Secund automat: alege instrucțiunile, mentalitatea și stilul înaintea fiecărui meci',
+      style_help_0: 'Mingi lungi spre atacanți: merge cu vârfuri puternice și bune la cap, contra fundașilor centrali slabi; ocolește lupta de la mijloc.',
+      style_help_1: 'Atacuri pe flancuri și centrări: ai nevoie de centrări bune și jucători buni la cap; merge contra fundașilor laterali slabi.',
+      style_help_2: 'Bloc defensiv: mai puține ocazii pentru ambele echipe; bun când adversarul e mai puternic și ai fundași buni și rezistență.',
+      style_help_3: 'Toți în atac: mai multe ocazii, dar lași spații; merge cu atacanți rapizi care finalizează bine, contra unei apărări lente.',
+      style_help_4: 'Șuturi de oriunde: merge doar dacă mijlocașii și atacanții tăi șutează bine.',
+      style_help_5: 'Joc dur: jucători agresivi și puternici câștigă mingea contra echipelor tehnice; mai multe cartonașe.',
+      style_help_6: 'Posesie cu pase scurte: ai nevoie de mijlocași buni la pase; presingul adversarului te încurcă.',
+      auto_tr: 'Antrenament automat', auto_tr_h: 'staff-ul alege tipul și intensitatea',
+      auto_tr_on: 'Staff-ul va seta în fiecare săptămână antrenamentul fiecărui jucător (pe atributele care contează cel mai mult pe postul lui; intensitatea după condiție, vârstă și meciuri).',
+      auto_tr_off: 'De acum setezi tu antrenamentul.',
+      training_help_auto: 'Automat: tinerii cu potențial trag tare, obosiții se odihnesc înainte de meciuri, veteranii lucrează ușor. Orice schimbare manuală îl oprește.',
+      n_v17_auto: 'Nou: antrenamentul automat e pornit (Club → Antrenament). Mentalitatea și stilul de joc contează acum cu adevărat — secundul le alege și pe ele.',
+      ans_want: '{c} a refuzat {v} pentru {p}. Cere {w}.',
+      ans_far_note: 'Oferta ta a fost mult prea mică — nu vor negocia mult.',
+      neg_buy_now: '{c} cere acum {v} pentru {p}.',
+      neg_buy_text: '{c} cere {w} pentru {p} (ultima ta ofertă: {v}). Cât oferi?',
+      neg_buy_last: 'următorul răspuns e prețul lor final',
+      neg_buy_counter: '{c} coboară la {v}.',
+      neg_buy_counter_last: '{c} face o ultimă ofertă: {v}. Accepți sau nu?',
+      neg_buy_ok: 'S-a făcut! {p} vine pentru {v}.',
+      neg_buy_walked: '{c} a încheiat negocierile pentru {p}. Poți face o nouă ofertă runda viitoare.',
+      neg_buy_walked_s: 'Negocieri încheiate', neg_buy_status: '{c} cere {w} — poți plăti sau negocia.',
+      neg_send: 'OFERĂ', neg_give_up: 'RENUNȚĂ', signed_for: 'A semnat pentru {v}!', ans_squad_s: 'Lot plin',
+      ans_note: 'Cluburile răspund în runda de după oferta ta. Dacă oferta e prea mică îți spun cât vor: plătești sau negociezi în runda aceasta.',
+      nfs_on: 'NU E DE VÂNZARE', nfs_off: 'DIN NOU DE VÂNZARE', nfs_sub: 'fără oferte pentru el',
+      nfs_title: 'Nu e de vânzare — niciun club nu va face oferte pentru el', nfs_set: '{p} nu e de vânzare: niciun club nu va mai face oferte pentru el.',
+      nfs_unset: '{p} poate primi din nou oferte.',
+      accept_counter: 'Acceptă {v}'
+    }
+  };
+  X.en.how_text = S.en.how_text.replace('<p style="text-align:center"><b>Made by Artur with ♥️</b></p>', '') + '<p><b>Mentality and style (v1.7).</b> A defensive mentality means fewer chances for both sides (good when they are stronger), an attacking one means more (good when you are stronger). Each playing style needs certain players (long balls: strong headers up front; wings: crossers; short passing: good passers; hard tackling: tough players…) and works better or worse against certain opponents. The ●●● marks show what suits the next match; the auto assistant picks all of it for you.</p><p><b>Auto training</b> (Club → Training): the staff sets focus and intensity every week. <b>Not for sale</b> (player card): no club will bid for him. When your bid is too low, the club tells you its price and you can <b>negotiate</b>.</p><p style="text-align:center"><b>Made by Artur with ♥️</b></p>';
+  X.ro.how_text = S.ro.how_text.replace('<p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>', '') + '<p><b>Mentalitate și stil (v1.7).</b> Mentalitatea defensivă înseamnă mai puține ocazii pentru ambele echipe (bună când adversarul e mai puternic), cea ofensivă mai multe (bună când tu ești mai puternic). Fiecare stil de joc are nevoie de anumiți jucători (mingi lungi: vârfuri bune la cap; pe aripi: centrări bune; pase scurte: pasatori buni; joc dur: jucători agresivi…) și merge mai bine sau mai rău contra anumitor adversari. Semnele ●●● arată ce se potrivește pentru meciul următor; secundul automat le alege pe toate pentru tine.</p><p><b>Antrenament automat</b> (Club → Antrenament): staff-ul alege tipul și intensitatea în fiecare săptămână. <b>Nu e de vânzare</b> (fișa jucătorului): niciun club nu mai face oferte pentru el. Când oferta ta e prea mică, clubul îți spune cât vrea și poți <b>negocia</b>.</p><p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>';
+  Object.keys(X).forEach(function (l) { for (var k in X[l]) S[l][k] = X[l][k]; });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* Ultimate Football Management 26-27 — utilities */
 (function (W) {
   'use strict';
@@ -2528,7 +2660,7 @@ window.UFM_NAMES = {
       stats: { streakW: 0, streakCS: 0, seasons: 0, totalSpent: 0, bestWin: 0 },
       opts: { speed: 2, alerts: { ht: true, goal: true, inj: true, red: true, yel: false }, msgs: 'full' },
       score: 0, pendingOffers: [], lastResults: null, log: [],
-      auto: { ins: true, rot: true } // v1.6: the assistant's instructions and the rotation of tired players
+      auto: { ins: true, rot: true, tr: true } // v1.6: the assistant's plan and the rotation of tired players; v1.7: training
     };
     var f = DB.teamFields;
     var byIdx = [];
@@ -3397,9 +3529,13 @@ window.UFM_NAMES = {
       if (r === 'CB') add('cbHea', a[A.HEA]);
       if (r === 'CM' || r === 'AM' || r === 'ST') add('central', (a[A.PAS] + a[A.DRI] + a[A.CRE]) / 3);
       if (r === 'CB' || r === 'DM') add('centDef', a[A.TAC]);
+      // v1.7: what the playing styles need
+      if (grp !== 'GK') { add('tough', 0.45 * a[A.AGG] + 0.35 * a[A.STR] + 0.2 * a[A.TAC]); add('stam', a[A.STA]); }
+      if (grp === 'MID' || grp === 'FWD') { add('shoot', a[A.SHO]); add('tech', 0.5 * a[A.DRI] + 0.5 * a[A.PAS]); }
+      if (r === 'ST') add('strFwd', a[A.STR]);
     });
     var out = {};
-    ['press', 'pass', 'defSpd', 'fwdSpd', 'cross', 'wideDef', 'aerial', 'cbHea', 'central', 'centDef'].forEach(function (k) {
+    ['press', 'pass', 'defSpd', 'fwdSpd', 'cross', 'wideDef', 'aerial', 'cbHea', 'central', 'centDef', 'tough', 'stam', 'shoot', 'tech', 'strFwd'].forEach(function (k) {
       out[k] = acc[k] && acc[k].length ? U.avg(acc[k]) : 55;
     });
     // wide play needs both crossers and someone to aim at
@@ -3412,6 +3548,49 @@ window.UFM_NAMES = {
     return on;
   }
   function c(v, a, b) { return U.clamp(v, a, b); }
+
+  // ------------------------------------------------------------------ v1.7: playing style = base values adjusted by how well
+  // the players (and the opponent) suit it; fit k goes from -1 (bad) to 1.2 (very good)
+  var NEUTRAL = { press: 67, pass: 73, defSpd: 71, fwdSpd: 74, cross: 74, wideDef: 65, aerial: 73, cbHea: 76, central: 72, centDef: 77, wing: 74, tough: 65, stam: 70, shoot: 68, tech: 72, strFwd: 77 };
+  // typical value of each comparison between two clubs of the same level (so that an average squad has k ≈ 0)
+  var SBIAS = [2, 9, 1.5, -3.5, -8.5, -8, 6];
+  function styleFit(s, a, d, dIns) {
+    a = a || NEUTRAL; d = d || NEUTRAL;
+    var raw;
+    switch (s) {
+      case 0: raw = 0.6 * a.aerial + 0.4 * a.strFwd - (0.7 * d.cbHea + 0.3 * d.tough); break;      // long ball: target men against their centre-backs
+      case 1: raw = a.wing - d.wideDef; break;                                                      // wings: crossers and headers against their full-backs
+      case 2: raw = 0.6 * a.centDef + 0.4 * a.stam - (0.6 * d.central + 0.4 * d.fwdSpd); break;     // defend: tacklers and stamina against their attack
+      case 3: raw = 0.5 * a.fwdSpd + 0.5 * a.shoot - (0.6 * d.centDef + 0.4 * d.defSpd); break;    // all-out attack: fast finishers against their defence
+      case 4: raw = a.shoot - d.centDef; break;                                                     // shoot on sight: good shooters against their defence
+      case 5: raw = a.tough - d.tech; break;                                                        // hard tackling: tough players against technical ones
+      default: s = 6; raw = a.pass - d.press - (dIns && dIns.press === 2 ? 3 : 0); break;          // short passing: passers against their pressing
+    }
+    return c((raw - SBIAS[s]) / 6, -1, 1.2);
+  }
+  var SF = { att: 0.03, def: 0.03, mid: 0.015, poss: 0.02 };
+  function styleFx(S) {
+    var MS = UFM.match, base = MS.STYLE[S.s] || MS.STYLE[6], o = {};
+    for (var key in base) o[key] = base[key];
+    var k = styleFit(S.s === undefined ? 6 : S.s, S.apt, S.foeApt, S.foeIns);
+    switch (S.s) {
+      case 0: o.att *= 1 + SF.att * k; o.header += 0.05 * k; o.midGap = 0.55; break;
+      case 1: o.att *= 1 + SF.att * k; o.header += 0.04 * k; break;
+      case 2: o.def *= 1 + SF.def * 1.5 * k; break;
+      case 3: o.att *= 1 + SF.att * k; break;
+      case 4: o.att *= 1 + SF.att * 1.15 * k; o.long += 0.04 * k; break;
+      case 5: o.def *= 1 + SF.def * k; o.mid *= 1 + SF.mid * 1.2 * k; break;
+      default: o.mid *= 1 + SF.mid * k; o.poss += SF.poss * k; break;
+    }
+    o.k = k;
+    return o;
+  }
+  // chance that the home side has the ball in a given minute (the long ball skips the midfield battle)
+  function possH(Mx) {
+    var H = Mx.s[0], Aw = Mx.s[1], sH = UFM.match.sty(H), sA = UFM.match.sty(Aw);
+    var gap = (H.str.mid - Aw.str.mid) / 16 * (sH.midGap || 1) * (sA.midGap || 1);
+    return U.sigmoid(gap + Mx.homeAdv + sH.poss - sA.poss + poss(H, Aw) - poss(Aw, H));
+  }
 
   // ------------------------------------------------------------------ effects used by the match engine
   // pressing effectiveness: our pressers against their press resistance (passing)
@@ -3478,7 +3657,7 @@ window.UFM_NAMES = {
     return Mx;
   }
   function attackGoals(S, D, home) {
-    var MS = UFM.match, st = MS.STYLE[S.s] || MS.STYLE[6], BG = MS.BASE_GOAL;
+    var MS = UFM.match, st = MS.sty(S), BG = MS.BASE_GOAL;
     var q = U.sigmoid((S.str.att - D.str.def) / 14 + (home ? 0.144 : 0) + quality(S, D));
     var w = shotMix(S, D, { n: 0.52, l: 0.2 + st.long, h: 0.18 + st.header, o: 0.08 + st.one });
     var tot = w.n + w.l + w.h + w.o;
@@ -3489,57 +3668,93 @@ window.UFM_NAMES = {
     return { perAttack: 0.0075 * 0.76 + pShot * conv + corner, q: q };
   }
   function estimate(Mx) {
-    var H = Mx.s[0], Aw = Mx.s[1], MS = UFM.match;
-    var stH = MS.STYLE[H.s] || MS.STYLE[6], stA = MS.STYLE[Aw.s] || MS.STYLE[6];
-    var pH = U.sigmoid((H.str.mid - Aw.str.mid) / 16 + Mx.homeAdv + stH.poss - stA.poss + poss(H, Aw) - poss(Aw, H));
+    var H = Mx.s[0], Aw = Mx.s[1];
+    var pH = possH(Mx);
     var nH = 90 * pH * 0.5 * H.str.vol * Aw.str.expo * (1 + Mx.homeAdv * 0.4), nA = 90 * (1 - pH) * 0.5 * Aw.str.vol * H.str.expo;
     var gH = attackGoals(H, Aw, true), gA = attackGoals(Aw, H, false);
     var cH = nA * (1 - gA.perAttack) * counterChance(H, Aw) * 0.55 * 0.15, cA = nH * (1 - gH.perAttack) * counterChance(Aw, H) * 0.55 * 0.15;
     return { gf: nH * gH.perAttack + cH, ga: nA * gA.perAttack + cA, pos: pH };
   }
-  // try every useful setting for side `sd` (coordinate ascent) and score them; returns {best, scores}
+  // expected points from expected goals (Poisson); d0 = current goal difference, rem = share of the match left
+  function pois(l, k) { var p = Math.exp(-l); for (var i = 1; i <= k; i++) p *= l / i; return p; }
+  function xPts(gf, ga, d0) {
+    var pf = [], pa = [], i, j, w = 0, dr = 0;
+    for (i = 0; i <= 9; i++) { pf.push(pois(gf, i)); pa.push(pois(ga, i)); }
+    for (i = 0; i <= 9; i++) for (j = 0; j <= 9; j++) { var d = d0 + i - j, p = pf[i] * pa[j]; if (d > 0) w += p; else if (d === 0) dr += p; }
+    return 3 * w + dr;
+  }
+  // try every useful setting for side `sd` (coordinate ascent) and score them; returns {best, rel, value, now}
+  // v1.7: the plan also covers the mentality (m) and the playing style (s); the score is the expected number of points
   var OPTS = { press: [0, 1, 2], line: [0, 1, 2], tempo: [0, 1, 2], width: [0, 1, 2], counter: [0, 1] };
-  function evaluate(Mx, sd, start) {
-    var S = Mx.s[sd], cur = norm(start || S.ins);
-    function score(ins) {
-      S.ins = ins; UFM.match.calcStr(S, 1);
-      var e = estimate(Mx);
-      return sd === 0 ? e.gf - e.ga : e.ga - e.gf;
+  var PLAN = { m: [0, 1, 2, 3, 4], s: [0, 1, 2, 3, 4, 5, 6] };
+  function planOf(S, ins) { var x = norm(ins); x.m = S.m === undefined ? 2 : S.m; x.s = S.s === undefined ? 6 : S.s; return x; }
+  function evaluate(Mx, sd, start, insOnly) {
+    var S = Mx.s[sd], O = Mx.s[1 - sd], m0 = S.m, s0 = S.s, cur = planOf(S, start || S.ins);
+    if (start && start.m !== undefined) cur.m = start.m;
+    if (start && start.s !== undefined) cur.s = start.s;
+    var keys = Object.keys(OPTS).concat(insOnly ? [] : ['m', 's']);
+    function vals(k) { return OPTS[k] || PLAN[k]; }
+    var rem = Mx.min ? Math.max(0.04, (90 - Math.min(90, Mx.min)) / 90) : 1;
+    var d0 = Mx.min ? (S.goals || 0) - (O.goals || 0) : 0;
+    function score(plan) {
+      S.ins = norm(plan); S.m = plan.m; S.s = plan.s; S.foeIns = O.ins; O.foeIns = S.ins;
+      UFM.match.calcStr(S, 1, O); UFM.match.calcStr(O, 1, S);
+      var e = estimate(Mx), gf = sd === 0 ? e.gf : e.ga, ga = sd === 0 ? e.ga : e.gf;
+      return xPts(gf * rem, ga * rem, d0);
     }
-    var scores = {};
-    var best = norm(cur), bestV = score(best);
+    function copy(x) { var y = {}; for (var k in x) y[k] = x[k]; return y; }
+    var best = copy(cur), bestV = score(best);
     for (var pass = 0; pass < 2; pass++) {
-      Object.keys(OPTS).forEach(function (k) {
-        OPTS[k].forEach(function (v) {
-          var x = norm(best); x[k] = v;
+      keys.forEach(function (k) {
+        vals(k).forEach(function (v) {
+          var x = copy(best); x[k] = v;
           var sc = score(x);
-          if (pass === 1) scores[k + v] = sc;
           if (sc > bestV + 1e-9) { bestV = sc; best = x; }
         });
       });
     }
-    // per-option value relative to the best set (for the analysis screen)
+    // per-option value relative to the best plan (for the analysis screen)
     var rel = {};
-    Object.keys(OPTS).forEach(function (k) { OPTS[k].forEach(function (v) { var x = norm(best); x[k] = v; rel[k + v] = score(x) - bestV; }); });
-    S.ins = cur; UFM.match.calcStr(S, 1);
-    return { best: best, value: bestV, rel: rel, now: score(cur) };
+    keys.forEach(function (k) { vals(k).forEach(function (v) { var x = copy(best); x[k] = v; rel[k + v] = score(x) - bestV; }); });
+    var now = score(cur);
+    S.ins = norm(cur); S.m = m0; S.s = s0; UFM.match.calcStr(S, 1, O); UFM.match.calcStr(O, 1, S);
+    return { best: best, value: bestV, rel: rel, now: now };
   }
   // estimate on a copy of a live match (current players, fitness and score untouched)
   function evaluateLive(Mx, sd, ins) {
     function clone(S) { var c = {}; for (var k in S) c[k] = S[k]; c.on = S.on.map(function (o) { return { pid: o.pid, role: o.role, slot: o.slot }; }); c.ins = norm(S.ins); return c; }
-    var Mx2 = { s: [clone(Mx.s[0]), clone(Mx.s[1])], homeAdv: Mx.homeAdv };
-    Mx2.s.forEach(function (S) { UFM.match.calcStr(S, 1); });
-    return evaluate(Mx2, sd, norm(ins));
+    var Mx2 = { s: [clone(Mx.s[0]), clone(Mx.s[1])], homeAdv: Mx.homeAdv, min: Mx.min || 0 };
+    UFM.match.calcStr(Mx2.s[0], 1, Mx2.s[1]); UFM.match.calcStr(Mx2.s[1], 1, Mx2.s[0]);
+    var st = norm(ins); if (ins && ins.m !== undefined) st.m = ins.m; if (ins && ins.s !== undefined) st.s = ins.s;
+    return evaluate(Mx2, sd, st);
   }
   // the assistant's plan for a fixture (used when the user lets him choose)
-  function bestFor(t, opp, home) {
+  function bestFor(t, opp, home) { return norm(bestPlan(t, opp, home)); }
+  // instructions + mentality + style
+  function bestPlan(t, opp, home) {
     var Mx = home === false ? prepareSides(opp, t) : prepareSides(t, opp);
     return evaluate(Mx, home === false ? 1 : 0, norm(t.tac.ins)).best;
   }
   function prepareSides(t, opp) {
     var Mx = sides(t, opp);
-    Mx.s.forEach(function (S) { UFM.match.calcStr(S, 1); });
+    Mx.s[0].foeIns = Mx.s[1].ins; Mx.s[1].foeIns = Mx.s[0].ins;
+    UFM.match.calcStr(Mx.s[0], 1, Mx.s[1]); UFM.match.calcStr(Mx.s[1], 1, Mx.s[0]);
     return Mx;
+  }
+  // the style that suits a club's players best (AI clubs pick it each season); weaker staffs sometimes miss it
+  function aiStyle(t) {
+    var Mx = prepareSides(t, t), S = Mx.s[0], O = Mx.s[1], sc = [];
+    S.ins = norm(null); O.ins = norm(null); S.m = 2; O.m = 2; O.s = 6;
+    for (var s = 0; s <= 6; s++) {
+      S.s = s; S.foeApt = NEUTRAL; S.foeIns = O.ins;
+      UFM.match.calcStr(S, 1); S.foeApt = NEUTRAL; UFM.match.calcStr(S, 1);
+      UFM.match.calcStr(O, 1, S);
+      var e = estimate(Mx);
+      sc.push(xPts(e.gf, e.ga, 0) - (s === 2 && t.rep >= 70 ? 0.03 : 0)); // big clubs do not park the bus every week
+    }
+    var order = sc.map(function (v, i) { return i; }).sort(function (x, y) { return sc[y] - sc[x]; });
+    var skill = U.clamp((t.rep - 20) / 70, 0.25, 0.95), seed = U.seeded(t.id + ':sty:' + (G().season || 0))();
+    return seed < skill ? order[0] : order[seed < (skill + 1) / 2 ? 1 : 2];
   }
 
   // ------------------------------------------------------------------ AI clubs pick instructions that suit their players
@@ -3549,11 +3764,12 @@ window.UFM_NAMES = {
         var Mx = home === false ? prepareSides(opp, t) : prepareSides(t, opp);
         var sd = home === false ? 1 : 0;
         Mx.s[sd].ins = norm(null);
-        var ev = evaluate(Mx, sd, norm(null));
+        var start = planOf(Mx.s[sd], null);
+        var ev = evaluate(Mx, sd, start);
         // weaker coaching staffs do not always find the best plan
         var skill = U.clamp((t.rep - 20) / 70, 0.2, 0.95);
-        var ins = norm(null), seed = U.seeded(t.id + ':' + G().season + ':' + opp.id)();
-        Object.keys(OPTS).forEach(function (k) { if (seed < skill || ev.rel[k + ins[k]] < ev.rel[k + ev.best[k]] - 0.12) ins[k] = ev.best[k]; seed = (seed * 7.31) % 1; });
+        var ins = start, seed = U.seeded(t.id + ':' + G().season + ':' + opp.id)();
+        Object.keys(OPTS).concat(['m', 's']).forEach(function (k) { if (seed < skill || ev.rel[k + ins[k]] < ev.rel[k + ev.best[k]] - 0.12) ins[k] = ev.best[k]; seed = (seed * 7.31) % 1; });
         return ins;
       } catch (e) { /* fall back to the simple rules */ }
     }
@@ -3603,6 +3819,15 @@ window.UFM_NAMES = {
     if (me.pass < 64) out.push({ k: 'tempo', v: 1, tone: ins.tempo === 2 ? 'bad' : 'info', key: 'an_tempo_bad', p: { a: r(me.pass) } });
     else if (me.pass >= 74) out.push({ k: 'tempo', v: 0, tone: ins.tempo === 0 ? 'good' : 'info', key: 'an_tempo_slow', p: { a: r(me.pass) } });
     if (ins.press === 2 || ins.tempo === 2) out.push({ k: 'fit', v: null, tone: 'info', key: 'an_fatigue', p: {} });
+    // v1.7: playing style and mentality
+    var st = t.tac.s === undefined ? 6 : t.tac.s, ks = styleFit(st, me, op || NEUTRAL, null), tr = UFM.i18n && UFM.i18n.t ? UFM.i18n.t : function (k) { return k; };
+    out.unshift({ k: 's', v: null, tone: ks >= 0.35 ? 'good' : ks <= -0.35 ? 'bad' : 'info', key: ks >= 0.35 ? 'an_style_good' : ks <= -0.35 ? 'an_style_bad' : 'an_style_ok', p: { s: tr('s' + st) } });
+    if (op) {
+      var d = UFM.game.strength(t).ovr - UFM.game.strength(opp).ovr, m = t.tac.m === undefined ? 2 : t.tac.m;
+      if (d <= -3) out.unshift({ k: 'm', v: null, tone: m >= 3 ? 'bad' : m <= 1 ? 'good' : 'info', key: 'an_ment_weaker', p: { d: -d } });
+      else if (d >= 3) out.unshift({ k: 'm', v: null, tone: m <= 1 ? 'bad' : m >= 3 ? 'good' : 'info', key: 'an_ment_stronger', p: { d: d } });
+      else out.unshift({ k: 'm', v: null, tone: 'info', key: 'an_ment_even', p: {} });
+    }
     return { me: me, op: op, list: out };
   }
 
@@ -3610,7 +3835,8 @@ window.UFM_NAMES = {
     DEFAULT: DEFAULT, norm: norm, aptitude: aptitude, teamOn: teamOn,
     poss: poss, vol: vol, expo: expo, quality: quality, shotMix: shotMix, finishing: finishing, offside: offside,
     counterChance: counterChance, fatigue: fatigue, fouls: fouls, pressEff: pressEff, aiChoose: aiChoose, analyze: analyze,
-    estimate: estimate, evaluate: evaluate, evaluateLive: evaluateLive, prepareSides: prepareSides, bestFor: bestFor, OPTS: OPTS
+    estimate: estimate, evaluate: evaluate, evaluateLive: evaluateLive, prepareSides: prepareSides, bestFor: bestFor, bestPlan: bestPlan, OPTS: OPTS, PLAN: PLAN,
+    styleFit: styleFit, styleFx: styleFx, SF: SF, SBIAS: SBIAS, possH: possH, aiStyle: aiStyle, xPts: xPts, NEUTRAL: NEUTRAL
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -3627,20 +3853,24 @@ window.UFM_NAMES = {
 
   // team instructions (style) and mentality
   // style: 0 long ball, 1 down the wings, 2 defend, 3 all-out attack, 4 shoot on sight, 5 hard tackling, 6 short passing
+  // v1.7: these are only the base values; how well a style works depends on the players and the opponent (tactics.styleFx)
   var STYLE = [ // expo: how much space the side leaves for the opponent's attacks
-    { att: 1.045, def: 1.0, mid: 0.99, vol: 1.15, expo: 1.0, header: 0.17, long: 0.03, one: 0.02, fouls: 1.0, poss: -0.05 },
-    { att: 1.04, def: 1.0, mid: 1.0, vol: 1.08, expo: 1.01, header: 0.12, long: 0.0, one: 0.0, fouls: 1.0, poss: 0.0 },
-    { att: 0.93, def: 1.09, mid: 0.99, vol: 0.78, expo: 0.72, header: 0.0, long: 0.02, one: 0.0, fouls: 1.1, poss: -0.04 },
-    { att: 1.06, def: 0.96, mid: 1.0, vol: 1.21, expo: 1.16, header: 0.02, long: 0.02, one: 0.03, fouls: 0.95, poss: 0.02 },
-    { att: 1.02, def: 1.0, mid: 1.0, vol: 1.2, expo: 1.0, header: 0.0, long: 0.2, one: -0.02, fouls: 1.0, poss: 0.0 },
-    { att: 1.0, def: 1.04, mid: 1.015, vol: 1.03, expo: 0.97, header: 0.0, long: 0.0, one: 0.0, fouls: 1.65, poss: 0.03 },
-    { att: 1.0, def: 1.0, mid: 1.015, vol: 0.97, expo: 0.99, header: -0.06, long: -0.04, one: 0.04, fouls: 0.9, poss: 0.04 }
+    { att: 1.0, def: 1.0, mid: 1.0, vol: 1.1, expo: 1.02, header: 0.17, long: 0.03, one: 0.02, fouls: 1.0, poss: -0.05 },
+    { att: 1.0, def: 0.99, mid: 1.0, vol: 1.05, expo: 1.0, header: 0.12, long: 0.0, one: 0.0, fouls: 1.0, poss: 0.0 },
+    { att: 0.95, def: 1.11, mid: 0.99, vol: 0.82, expo: 0.72, header: 0.0, long: 0.02, one: 0.0, fouls: 1.1, poss: -0.04 },
+    { att: 1.04, def: 0.94, mid: 1.0, vol: 1.15, expo: 1.2, header: 0.02, long: 0.02, one: 0.03, fouls: 0.95, poss: 0.02 },
+    { att: 1.0, def: 1.0, mid: 1.0, vol: 1.2, expo: 1.0, header: 0.0, long: 0.2, one: -0.02, fouls: 1.0, poss: 0.0 },
+    { att: 0.99, def: 1.02, mid: 1.0, vol: 1.0, expo: 0.97, header: 0.0, long: 0.0, one: 0.0, fouls: 1.65, poss: 0.0 },
+    { att: 1.0, def: 1.0, mid: 1.0, vol: 0.97, expo: 0.97, header: -0.03, long: -0.02, one: 0.01, fouls: 1.0, poss: 0.0 }
   ];
+  // v1.7: a real choice — defending lowers the number of chances for both sides (good for the weaker team),
+  // attacking raises it (good for the stronger team) and opens space for counter-attacks
   var MENT = [ // very defensive .. very attacking
-    { att: 0.92, def: 1.06, vol: 0.78, expo: 0.76 }, { att: 0.96, def: 1.03, vol: 0.89, expo: 0.88 }, { att: 1, def: 1, vol: 1, expo: 1 },
-    { att: 1.03, def: 0.97, vol: 1.11, expo: 1.13 }, { att: 1.06, def: 0.94, vol: 1.22, expo: 1.27 }
+    { att: 0.91, def: 1.08, vol: 0.74, expo: 0.7 }, { att: 0.955, def: 1.04, vol: 0.87, expo: 0.85 }, { att: 1, def: 1, vol: 1, expo: 1 },
+    { att: 1.03, def: 0.96, vol: 1.12, expo: 1.18 }, { att: 1.06, def: 0.92, vol: 1.24, expo: 1.36 }
   ];
-  var BASE_GOAL = { n: 0.09, l: 0.034, h: 0.088, o: 0.31 };
+  function sty(S) { return S.sty || STYLE[S.s] || STYLE[6]; }
+  var BASE_GOAL = { n: 0.099, l: 0.037, h: 0.097, o: 0.34 }; // v1.7: +10% (the new styles and mentalities make games a little tighter)
   var BASE_TARGET = { n: 0.38, l: 0.3, h: 0.34, o: 0.64 };
   var SHOOTER_W = { GK: 0, CB: 0.42, LB: 0.34, RB: 0.34, DM: 0.55, CM: 0.9, AM: 1.3, LM: 1.05, RM: 1.05, LW: 1.4, RW: 1.4, ST: 1.65 };
   var HEADER_W = { GK: 0, CB: 1.25, LB: 0.4, RB: 0.4, DM: 0.65, CM: 0.65, AM: 0.6, LM: 0.6, RM: 0.6, LW: 0.7, RW: 0.7, ST: 1.75 };
@@ -3664,8 +3894,9 @@ window.UFM_NAMES = {
     return S;
   }
 
-  function calcStr(S, form) {
+  function calcStr(S, form, D) {
     var g = G();
+    if (D) { if (D.apt) S.foeApt = D.apt; S.foeIns = D.ins; }
     if (form) S.form = form;
     form = S.form || 1;
     var att = 0, attW = 0, mid = 0, midW = 0, def = 0, defW = 0, gk = 45;
@@ -3685,9 +3916,9 @@ window.UFM_NAMES = {
     });
     // missing players (red cards) hurt a lot
     var n = S.on.length, pen = n < 11 ? Math.pow(0.93, 11 - n) : 1;
-    var st = STYLE[S.s] || STYLE[6], me = MENT[S.m] || MENT[2];
     S.ins = T().norm(S.ins);
     S.apt = T().aptitude(S.on);
+    var st = S.sty = T().styleFx(S), me = MENT[S.m] || MENT[2];
     S.str = {
       att: (attW ? att / attW : 40) * st.att * me.att * pen * form,
       mid: (midW ? mid / midW : 40) * st.mid * pen * form,
@@ -3716,6 +3947,8 @@ window.UFM_NAMES = {
       Mx.agg = l1 ? { h: l1.ag, a: l1.hg } : { h: 0, a: 0 }; // from current home side's perspective
     }
     Mx.needWinner = !!f.ko || f.leg === 2;
+    // each side knows the opponent (the style's effect depends on it)
+    calcStr(Mx.s[0], null, Mx.s[1]); calcStr(Mx.s[1], null, Mx.s[0]);
     return Mx;
   }
 
@@ -3744,10 +3977,9 @@ window.UFM_NAMES = {
   // one minute of football
   function minute(Mx) {
     var H = Mx.s[0], Aw = Mx.s[1], live = Mx.live;
-    if (Mx.min % 5 === 1) { calcStr(H, Mx.form[0]); calcStr(Aw, Mx.form[1]); }
+    if (Mx.min % 5 === 1) { calcStr(H, Mx.form[0], Aw); calcStr(Aw, Mx.form[1], H); }
     // possession
-    var stH = STYLE[H.s] || STYLE[6], stA = STYLE[Aw.s] || STYLE[6];
-    var pH = U.sigmoid((H.str.mid - Aw.str.mid) / 16 + Mx.homeAdv + stH.poss - stA.poss + T().poss(H, Aw) - T().poss(Aw, H));
+    var pH = T().possH(Mx);
     var atk = R.f() < pH ? 0 : 1;
     Mx.st.pos[atk]++;
     var S = Mx.s[atk], D = Mx.s[1 - atk];
@@ -3764,7 +3996,7 @@ window.UFM_NAMES = {
     }
     // fouls & cards (both sides)
     for (var sd = 0; sd < 2; sd++) {
-      var X = Mx.s[sd], st = STYLE[X.s] || STYLE[6];
+      var X = Mx.s[sd], st = sty(X);
       if (R.f() < 0.105 * st.fouls * T().fouls(X)) foul(Mx, sd);
     }
     // injuries
@@ -3778,7 +4010,7 @@ window.UFM_NAMES = {
     }
     // fatigue
     for (sd = 0; sd < 2; sd++) {
-      var Z = Mx.s[sd], st2 = STYLE[Z.s] || STYLE[6];
+      var Z = Mx.s[sd];
       var mult = (Z.s === 3 || Z.s === 5 ? 1.08 : 1) * (Z.m >= 3 ? 1.05 : 1) * T().fatigue(Z);
       Z.on.forEach(function (o) {
         var pp = pl(o.pid);
@@ -3792,7 +4024,7 @@ window.UFM_NAMES = {
   function attack(Mx, atk) {
     var S = Mx.s[atk], D = Mx.s[1 - atk], live = Mx.live;
     var q = U.sigmoid((S.str.att - D.str.def) / 14 + (atk === 0 ? Mx.homeAdv * 1.2 : 0) + T().quality(S, D));
-    var st = STYLE[S.s] || STYLE[6];
+    var st = sty(S);
     var roll = R.f();
     var pShot = 0.4 + 0.25 * (q - 0.5);
     if (roll < 0.0075) { penalty(Mx, atk); return; }
@@ -3863,7 +4095,7 @@ window.UFM_NAMES = {
     var runner = pickOn(X, SHOOTER_W, A.SPD);
     if (Mx.live && runner) { ev(Mx, side, 'counter', runner); Mx.ball = runner; }
     var q = U.sigmoid((X.str.att - Y.str.def) / 14 + 0.35);
-    if (R.chance(0.55)) shot(Mx, side, q, STYLE[X.s] || STYLE[6], R.chance(0.55) ? 'o' : 'n');
+    if (R.chance(0.55)) shot(Mx, side, q, sty(X), R.chance(0.55) ? 'o' : 'n');
   }
 
   function goal(Mx, atk, scorer, assister, type) {
@@ -4140,7 +4372,7 @@ window.UFM_NAMES = {
   }
 
   UFM.match = {
-    STYLE: STYLE, MENT: MENT, BASE_GOAL: BASE_GOAL, create: create, step: step, simulate: simulate, substitute: substitute, autoReplace: autoReplace,
+    STYLE: STYLE, MENT: MENT, BASE_GOAL: BASE_GOAL, sty: sty, create: create, step: step, simulate: simulate, substitute: substitute, autoReplace: autoReplace,
     setTactics: setTactics, setFormation: setFormation, calcStr: calcStr, gkOf: gkOf, isLevel: isLevel
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -4535,18 +4767,51 @@ window.UFM_NAMES = {
       if (p.ret) ask *= 0.8; // a player about to retire is cheaper
       if (!canLose(p)) ask *= 1.35;
       if (o.amt >= ask) { execute(o.pid, p.t, buyer.id, o.amt); res.r = 'accepted'; out.push(res); return; }
-      if (o.amt >= ask * 0.85) {
-        var counter = Math.round((ask * (0.97 + R.f() * 0.08)) / 1e4) * 1e4;
-        if (counter <= o.amt) { execute(o.pid, p.t, buyer.id, o.amt); res.r = 'accepted'; out.push(res); return; }
-        p.counter = { amt: counter, date: g.date, club: p.t };
-        res.r = 'counter'; res.counter = counter; out.push(res); return;
-      }
-      res.r = 'rejected'; res.hint = o.amt < ask * 0.6 ? 'far' : 'close'; out.push(res);
+      // v1.7: a bid that is too low is never just turned down: the club says how much it wants and the user can
+      // pay it or negotiate (the club has a hidden lowest price and only so much patience; a lowball costs patience)
+      var want = Math.max(Math.round((ask * (1 + R.f() * 0.06)) / 1e4) * 1e4, o.amt + 1e4);
+      var min = Math.min(want, Math.round((ask * (0.9 + R.f() * 0.07)) / 1e4) * 1e4);
+      var far = o.amt < ask * 0.6;
+      p.counter = { amt: want, date: g.date, club: p.t };
+      p.neg = { club: p.t, want: want, min: min, pat: far ? 1 : o.amt >= ask * 0.85 ? 3 : 2, date: g.date, last: o.amt };
+      res.r = 'counter'; res.counter = want; res.far = far || undefined; out.push(res);
     });
     g.myOffers = keep;
     if (out.length) g.offerResults = (g.offerResults || []).concat(out);
     out.forEach(function (x) { UFM.season.addNews('offer_' + x.r, { p: x.name, c: g.teams[x.club] ? g.teams[x.club].name : '', v: U.money(x.counter || x.amt) }); });
     return out;
+  }
+  // v1.7: the user answers the club's price with another offer (same round)
+  function negActive(p) { var g = G(); return !!(p && p.neg && p.neg.date === g.date && p.neg.club === p.t); }
+  function buyNegotiate(pid, offer) {
+    var g = G(), p = g.players[pid], buyer = g.teams[g.userTeam];
+    if (!negActive(p)) return { r: 'expired' };
+    var n = p.neg;
+    offer = Math.round(offer / 1e4) * 1e4;
+    if (offer >= n.want) offer = n.want;
+    if (offer > buyer.cash - committed()) return { r: 'cash' };
+    if (buyer.squad.length >= MAX_SQUAD) return { r: 'squad' };
+    if (!windowOpen()) return { r: 'window' };
+    if (offer >= n.min) { delete p.neg; delete p.counter; execute(pid, p.t, buyer.id, offer); return { r: 'accepted', fee: offer }; }
+    n.pat--;
+    if (n.pat < 0 || offer < n.min * 0.7) { delete p.neg; delete p.counter; return { r: 'walked' }; }
+    // they come down part of the way; the last answer is their lowest price
+    var nw = n.pat === 0 ? n.min : Math.round((n.want - (n.want - Math.max(offer, n.min)) * (0.3 + R.f() * 0.25)) / 1e4) * 1e4;
+    n.want = Math.max(n.min, Math.min(n.want, nw)); n.last = offer;
+    p.counter.amt = n.want;
+    return { r: 'counter', amt: n.want, last: n.pat === 0 };
+  }
+  // v1.7: "not for sale": no club makes an offer for him, whatever the price
+  function toggleNfs(pid) {
+    var g = G(), p = g.players[pid];
+    if (!p || p.t !== g.userTeam) return false;
+    p.nfs = !p.nfs;
+    if (p.nfs) {
+      p.listed = false;
+      if (p.nfsS !== g.season) { p.nfsS = g.season; p.mor = U.clamp(p.mor + 3, 5, 100); } // feeling wanted
+      g.pendingOffers = (g.pendingOffers || []).filter(function (o) { return o.pid !== pid; });
+    }
+    return p.nfs;
   }
   function cancelOffer(pid) { var g = G(); g.myOffers = myOffers().filter(function (o) { return o.pid !== pid; }); }
   function acceptCounter(pid) {
@@ -4554,7 +4819,8 @@ window.UFM_NAMES = {
     if (!p.counter || p.counter.date !== g.date || (p.counter.club && p.counter.club !== p.t)) return { r: 'expired' };
     var buyer = g.teams[g.userTeam];
     if (p.counter.amt > buyer.cash) return { r: 'cash' };
-    var amt = p.counter.amt; delete p.counter;
+    if (buyer.squad.length >= MAX_SQUAD) return { r: 'squad' };
+    var amt = p.counter.amt; delete p.counter; delete p.neg;
     execute(pid, p.t, buyer.id, amt);
     return { r: 'accepted', fee: amt };
   }
@@ -4653,11 +4919,12 @@ window.UFM_NAMES = {
     if (!windowOpen()) return [];
     var out = [];
     var r = R.f(), n = r < 0.15 ? 0 : r < 0.5 ? 1 : r < 0.8 ? 2 : r < 0.95 ? 3 : 4;
-    var sq = me.squad.map(function (id) { return g.players[id]; }).filter(function (p) { return p.inj <= 0; });
+    var sq = me.squad.map(function (id) { return g.players[id]; }).filter(function (p) { return p.inj <= 0 && !p.nfs; });
     var listed = sq.filter(function (p) { return p.listed; });
     if (listed.length && R.chance(0.6)) n++; // players on the transfer list attract extra bids
     var all = Object.keys(g.teams).map(function (id) { return g.teams[id]; }).filter(function (t) { return !t.user && t.squad.length < 32; });
-    for (var i = 0; i < n * 3 && out.length < n && sq.length > MIN_SQUAD; i++) {
+    var squadN = me.squad.length;
+    for (var i = 0; i < n * 3 && out.length < n && sq.length && squadN > MIN_SQUAD; i++) {
       var p = R.weighted(sq, function (x) { var fm = formOf(x); return Math.pow(x.val / 1e6 + 0.5, 0.8) * (fm.hot ? 2.5 : 1) * (x.ret ? 0.3 : 1) * (x.listed ? 5 : 1); });
       if (out.some(function (o) { return o.pid === p.id; })) continue;
       var fm = formOf(p);
@@ -4698,7 +4965,7 @@ window.UFM_NAMES = {
     var g = G(), p = g.players[pid];
     if (!p || p.t !== g.userTeam) return false;
     p.listed = !p.listed;
-    if (p.listed) p.mor = U.clamp(p.mor - 4, 5, 100);
+    if (p.listed) { p.mor = U.clamp(p.mor - 4, 5, 100); p.nfs = false; }
     return p.listed;
   }
   function acceptAIOffer(o) {
@@ -4847,7 +5114,7 @@ window.UFM_NAMES = {
   UFM.transfers = {
     MAX_SQUAD: MAX_SQUAD, MIN_SQUAD: MIN_SQUAD,
     windowOpen: windowOpen, windowName: windowName, askingPrice: askingPrice, interest: interest, untouchable: untouchable,
-    makeOffer: makeOffer, acceptCounter: acceptCounter, resolveUserOffers: resolveUserOffers, pendingFor: pendingFor, myOffers: myOffers, cancelOffer: cancelOffer,
+    makeOffer: makeOffer, acceptCounter: acceptCounter, buyNegotiate: buyNegotiate, negActive: negActive, toggleNfs: toggleNfs, resolveUserOffers: resolveUserOffers, pendingFor: pendingFor, myOffers: myOffers, cancelOffer: cancelOffer,
     committed: committed, windowKey: windowKey, formOf: formOf, execute: execute, sellNow: sellNow, release: release,
     generateOffersForUser: generateOffersForUser, acceptAIOffer: acceptAIOffer, negotiateBid: negotiateBid, toggleList: toggleList, aiMarquee: aiMarquee, clubLevel: clubLevel, aiActivity: aiActivity, aiStrengthen: aiStrengthen,
     ensureBalance: ensureBalance, ensureKeeper: ensureKeeper, canLose: canLose, groupCount: groupCount, fillSquad: fillSquad, trimSquad: trimSquad
@@ -4898,10 +5165,53 @@ window.UFM_NAMES = {
     return out.sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : a.id - b.id; });
   }
 
+  // ------------------------------------------------------------------ v1.7: automatic training (the staff sets focus and intensity)
+  // focus: the training group that works on the attributes that count most for the player's position and are still low
+  var TRAIN_TYPES = ['def', 'mid', 'att', 'tec', 'fit'];
+  function bestFocus(p) {
+    if (p.r === 'GK') return 'gk';
+    var w = {}; (M.W8[p.r] || []).forEach(function (x) { w[x[0]] = x[1]; });
+    var avg = 0, n = 0; for (var a in w) { avg += p.at[a]; n++; } avg = n ? avg / n : 70;
+    var best = M.defaultTraining(p.r), bv = -1;
+    TRAIN_TYPES.forEach(function (ty) {
+      var v = 0;
+      TRAIN_SETS[ty].forEach(function (a) { if (w[a]) v += w[a] * (1 + U.clamp((avg - p.at[a]) / 25, -0.5, 1)); });
+      if (v > bv + 1e-9) { bv = v; best = ty; }
+    });
+    return best;
+  }
+  // intensity: 0 rest .. 3 heavy
+  function autoIntensity(p, ctx) {
+    if (p.inj > 0) return 0;
+    if (p.fit < 72) return 0;
+    var starter = !!ctx.xi[p.id];
+    if (p.fit < 85 || (starter && (ctx.days <= 2 || ctx.week >= 2))) return 1;
+    if (p.a <= 23 && p.pot - p.ovr >= 3) return starter && ctx.week >= 1 ? 2 : 3; // young players with room to grow work hardest
+    if (p.a >= 30) return 1;
+    return 2;
+  }
+  function autoTraining(force) {
+    var g = G(), t = g.teams[g.userTeam], au = UFM.game.autoOpts();
+    if (!t || (!au.tr && !force)) return false;
+    var fx = userFixtures().filter(function (f) { return !f.pl && f.d >= g.date; });
+    var next = fx[0], days = next ? U.daysBetween(g.date, next.d) : 99;
+    var week = fx.filter(function (f) { return U.daysBetween(g.date, f.d) <= 7; }).length;
+    var xi = {}; (t.tac.pref && t.tac.pref.length ? t.tac.pref : t.tac.xi || []).concat(t.tac.xi || []).forEach(function (id) { if (id) xi[id] = 1; });
+    var ctx = { days: days, week: week, xi: xi };
+    t.squad.forEach(function (id) {
+      var p = g.players[id]; if (!p) return;
+      p.tr = p.tr || { i: 2, ty: M.defaultTraining(p.r) };
+      p.tr.ty = bestFocus(p);
+      p.tr.i = autoIntensity(p, ctx);
+    });
+    return true;
+  }
+
   // ------------------------------------------------------------------ daily updates
   function passDays(days) {
     var g = G();
     if (days <= 0) return;
+    autoTraining();
     var weeks = days / 7;
     var games = UFM.dev ? UFM.dev.teamGames() : {};
     for (var id in g.players) {
@@ -4938,7 +5248,13 @@ window.UFM_NAMES = {
       var au = UFM.game.autoOpts();
       if (au.rot) UFM.game.rotateUser(t); else { t.tac.rotLog = null; UFM.game.validateLineup(t); }
       t.tac.autoIns = false;
-      if ((au.ins || t.tac.auto) && oppo) { try { t.tac.ins = UFM.tactics.bestFor(t, oppo, home !== false); t.tac.autoIns = true; } catch (e) { /* keep the plan */ } }
+      if ((au.ins || t.tac.auto) && oppo) {
+        try {
+          // v1.7: the assistant also picks the mentality and the playing style for this opponent
+          var pl = UFM.tactics.bestPlan(t, oppo, home !== false);
+          t.tac.ins = UFM.tactics.norm(pl); t.tac.m = pl.m; t.tac.s = pl.s; t.tac.autoIns = true;
+        } catch (e) { /* keep the plan */ }
+      }
       return;
     }
     UFM.transfers.ensureKeeper(t);
@@ -4950,13 +5266,21 @@ window.UFM_NAMES = {
       var d = s1 - s2;
       t.tac.m = d > 6 ? 3 : d > 2 ? 2 : d < -6 ? 1 : 2;
     }
+    // v1.7: the style that suits the players (chosen once a season)
     if (t.tac.s === undefined || t._styleSet !== G().season) {
-      var q = t.base.ovr;
-      t.tac.s = q >= 80 ? R.pick([6, 6, 6, 1, 3]) : q >= 74 ? R.pick([6, 1, 1, 0, 6]) : R.pick([0, 1, 1, 6, 5]);
-      t._styleSet = G().season;
+      try { t.tac.s = UFM.tactics.aiStyle(t); } catch (e) { t.tac.s = 6; }
+      t._styleSet = G().season; t._style0 = t.tac.s;
+    } else if (t._style0 !== undefined) t.tac.s = t._style0;
+    // team instructions: the coaching staff studies the opponent (always against the user's club),
+    // and against the user it also adapts the mentality and the style
+    if (oppo) {
+      if (oppo.user || G().tacAll) {
+        var plan = UFM.tactics.aiChoose(t, oppo, home !== false);
+        t.tac.ins = UFM.tactics.norm(plan);
+        if (plan.m !== undefined) t.tac.m = plan.m;
+        if (plan.s !== undefined) t.tac.s = plan.s;
+      } else t.tac.ins = UFM.tactics.norm(null);
     }
-    // team instructions: the coaching staff studies the opponent (always against the user's club)
-    if (oppo) t.tac.ins = (oppo.user || G().tacAll) ? UFM.tactics.aiChoose(t, oppo, home !== false) : UFM.tactics.norm(null);
   }
 
   // simulate every fixture on a date (optionally skipping one id)
@@ -5394,7 +5718,8 @@ window.UFM_NAMES = {
   UFM.season = {
     addNews: addNews, ticker: ticker, userNextFixture: userNextFixture, userFixtures: userFixtures,
     passDays: passDays, advanceTo: advanceTo, continueGame: continueGame, finishUserDay: finishUserDay,
-    playDay: playDay, dayDone: dayDone, prepareTeam: prepareTeam, endSeason: endSeason, newSeason: newSeason, TRAIN_SETS: TRAIN_SETS
+    playDay: playDay, dayDone: dayDone, prepareTeam: prepareTeam, endSeason: endSeason, newSeason: newSeason, TRAIN_SETS: TRAIN_SETS,
+    autoTraining: autoTraining, bestFocus: bestFocus
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -6487,7 +6812,7 @@ window.UFM_NAMES = {
       p.promise = null;
       if ((p.s.ap - pr.ap) >= 3 || pr.season !== g.season && p.s.ap >= 3) { p.mor = U.clamp(p.mor + 10, 5, 100); UFM.season.addNews('promise_kept', { p: p.n }); }
       else {
-        p.mor = U.clamp(p.mor - 25, 5, 100); p.listed = true;
+        p.mor = U.clamp(p.mor - 25, 5, 100); p.listed = true; p.nfs = false;
         morale(squad(t).filter(function (q) { return q !== p; }), -3);
         push({ k: 'promise_broken', p: { p: p.n } });
       }
@@ -6530,7 +6855,7 @@ window.UFM_NAMES = {
       case 'unhappy':
         if (!mine) break;
         if (c === 'promise') { p.promise = { by: U.addDays(g.date, 35), ap: p.s.ap, season: g.season }; p.mor = U.clamp(p.mor + 15, 5, 100); }
-        else if (c === 'list') { p.listed = true; p.mor = U.clamp(p.mor + 5, 5, 100); }
+        else if (c === 'list') { p.listed = true; p.nfs = false; p.mor = U.clamp(p.mor + 5, 5, 100); }
         else {
           p.mor = U.clamp(p.mor - 20, 5, 100);
           if (R.chance(0.35)) morale(squad(t).filter(function (q) { return q !== p; }), -2);
@@ -6550,7 +6875,7 @@ window.UFM_NAMES = {
         else {
           var win = c === 'a' ? a : b, lose = c === 'a' ? b : a;
           win.mor = U.clamp(win.mor + 5, 5, 100); lose.mor = U.clamp(lose.mor - 25, 5, 100);
-          if (R.chance(0.35)) { lose.listed = true; UFM.season.addNews('transfer_request', { p: lose.n }); }
+          if (R.chance(0.35)) { lose.listed = true; lose.nfs = false; UFM.season.addNews('transfer_request', { p: lose.n }); }
         }
         break;
       case 'family':
@@ -6872,9 +7197,11 @@ window.UFM_NAMES = {
       if (UFM.career.fixStarSystems) { try { UFM.career.fixStarSystems(); } catch (e) { /* keep the old objectives */ } }
     }
     // v1.6: the assistant's instructions and the rotation of tired players, switched on once for older saves
+    // v1.7: automatic training, switched on once
+    if (o.auto && o.auto.tr === undefined) { o.auto.tr = true; if (UFM.season && o.news) UFM.season.addNews('v17_auto'); }
     if (!o.auto) {
       var ut0 = o.teams[o.userTeam];
-      o.auto = { ins: true, rot: true };
+      o.auto = { ins: true, rot: true, tr: true };
       if (ut0 && ut0.tac) delete ut0.tac.auto;
       if (UFM.season && o.news) UFM.season.addNews('v16_auto');
     }
@@ -7664,7 +7991,7 @@ window.UFM_NAMES = {
       el('div', { class: 'made-by' }, t('made_by'))
     ]));
     if (UFM.cloud && UFM.cloud.ready()) root.appendChild(el('div', { class: 'cloud-line', style: ui.abs({ position: 'absolute', left: '0', right: '0', bottom: '34px', textAlign: 'center', fontSize: '12.5px', color: '#cfe3ff' }) }, '☁ ' + t('cloud_on')));
-    root.appendChild(el('div', { class: 'title-foot' }, 'v1.6 · ' + t('foot_note')));
+    root.appendChild(el('div', { class: 'title-foot' }, 'v1.7 · ' + t('foot_note')));
   };
 
   function howTo() { ui.popup({ cls: 'wide left', title: t('how_title'), body: t('how_text'), buttons: [{ label: t('close'), cls: 'green', esc: true }] }); }
@@ -8152,6 +8479,7 @@ window.UFM_NAMES = {
     ]));
     if (p.ret) kids.push(el('div', { class: 'ret-line' }, [ui.retIcon(p), ' ' + t('ret_card', { s: ui.seasonName(p.ret) })]));
     if (UFM.career.isBoardStar && UFM.career.isBoardStar(p.id)) kids.push(el('div', { class: 'ret-line star-line' }, '★ ' + t('bid_star')));
+    if (p.nfs && p.t === G().userTeam) kids.push(el('div', { class: 'ret-line nfs-line' }, '🔒 ' + t('nfs_title')));
     // development: how the player is evolving and his attitude (own players)
     var dv = p.t && p.t === G().userTeam && UFM.dev ? UFM.dev.note(p) : null;
     if (dv) kids.push(el('div', { class: 'dev-line ' + dv.k }, [el('span', null, t('dev_label') + ': '), el('b', null, t(dv.k)), el('span', { class: 'sub' }, ' · ' + t('att_label') + ': '), el('b', null, t(dv.att))]));
@@ -8233,7 +8561,7 @@ window.UFM_NAMES = {
         isAttr ? el('td', { class: 'c b', style: { color: ui.attrColor(p.at[A[sq.sort.toUpperCase()]]) } }, String(Math.round(p.at[A[sq.sort.toUpperCase()]]))) : null,
         el('td', null, el('div', { style: { width: ui.mobile ? '34px' : '44px' } }, ui.bar(fit, 100, ui.fitColor(fit)))),
         el('td', { class: 'r m-hide' }, U.money(p.val)),
-        el('td', { style: { whiteSpace: 'nowrap' } }, [ui.status(p), p.ret ? ui.retIcon(p) : null, UFM.career.isBoardStar(p.id) ? el('span', { class: 'sq-flag star', title: t('obj_cat_star') }, '★') : null, p.listed ? el('span', { class: 'sq-flag', title: t('listed_title') }, t('listed_tag')) : null, p.promise ? el('span', { class: 'sq-flag', style: { background: '#9cc4ff', color: '#0b2a6b' }, title: t('promise_title') }, '!') : null])
+        el('td', { style: { whiteSpace: 'nowrap' } }, [ui.status(p), p.ret ? ui.retIcon(p) : null, UFM.career.isBoardStar(p.id) ? el('span', { class: 'sq-flag star', title: t('obj_cat_star') }, '★') : null, p.listed ? el('span', { class: 'sq-flag', title: t('listed_title') }, t('listed_tag')) : null, p.nfs ? el('span', { class: 'sq-flag nfs', title: t('nfs_title') }, '🔒') : null, p.promise ? el('span', { class: 'sq-flag', style: { background: '#9cc4ff', color: '#0b2a6b' }, title: t('promise_title') }, '!') : null])
       ]);
       tb.appendChild(tr);
     });
@@ -8247,7 +8575,8 @@ window.UFM_NAMES = {
       ui.playerCard(p, { buttons: [
         el('button', { class: 'btn red', onclick: function () { releasePlayer(p); } }, [t('release'), el('small', null, t('release_sub'))]),
         el('button', { class: 'btn gold', onclick: function () { sellPlayer(p); } }, [t('sell'), el('small', { style: { color: '#4a3000' } }, t('sell_sub'))]),
-        el('button', { class: 'btn' + (p.listed ? ' sel' : ''), onclick: function () { listPlayer(p); } }, [p.listed ? t('unlist') : t('list'), el('small', null, t('list_sub'))])
+        el('button', { class: 'btn' + (p.listed ? ' sel' : ''), onclick: function () { listPlayer(p); } }, [p.listed ? t('unlist') : t('list'), el('small', null, t('list_sub'))]),
+        el('button', { class: 'btn nfs-btn' + (p.nfs ? ' sel' : ''), onclick: function () { nfsPlayer(p); } }, [p.nfs ? t('nfs_off') : t('nfs_on'), el('small', null, t('nfs_sub'))])
       ] }).forEach(function (k) { card.appendChild(k); });
     }
     root.appendChild(card);
@@ -8256,6 +8585,14 @@ window.UFM_NAMES = {
     wrap.addEventListener('scroll', function () { sq.scroll = wrap.scrollTop; });
   };
 
+  // v1.7: not for sale — no club makes an offer for him
+  function nfsPlayer(p) {
+    var on = UFM.transfers.toggleNfs(p.id);
+    ui.sound('click');
+    ui.toast(U.esc(t(on ? 'nfs_set' : 'nfs_unset', { p: p.n })), 'info');
+    UFM.save.autosave();
+    ui.refresh();
+  }
   // transfer list: other clubs bid more often (and less) for listed players
   function listPlayer(p) {
     if (!p.listed && UFM.career.isBoardStar(p.id) && !p._starOk) { ui.starGuard(p, function () { p._starOk = true; listPlayer(p); delete p._starOk; }, 'star_list_q'); return; }
@@ -8273,6 +8610,7 @@ window.UFM_NAMES = {
       { label: t('release'), cls: 'red', fn: function () { releasePlayer(p); } },
       { label: t('sell'), cls: 'gold', fn: function () { sellPlayer(p); } },
       { label: p.listed ? t('unlist') : t('list'), cls: '', fn: function () { listPlayer(p); } },
+      { label: p.nfs ? t('nfs_off') : t('nfs_on'), cls: 'nfs-btn' + (p.nfs ? ' sel' : ''), fn: function () { nfsPlayer(p); } },
       { label: t('close'), cls: 'gray', esc: true }
     ] });
   }
@@ -8310,14 +8648,25 @@ window.UFM_NAMES = {
   ui.screens.training = function (root) {
     var g = G(), ut = g.teams[g.userTeam];
     root.appendChild(ui.header({ back: function () { ui.go('clubMenu'); } }));
+    var au = UFM.game.autoOpts(), autoOn = !!au.tr;
     var allSeg = el('div', { class: 'seg' });
     [t('t_none'), t('t_light'), t('t_medium'), t('t_heavy')].forEach(function (lbl, i) {
-      allSeg.appendChild(el('button', { onclick: function () { ut.squad.forEach(function (id) { g.players[id].tr.i = i; }); ui.refresh(); } }, lbl));
+      allSeg.appendChild(el('button', { onclick: function () { manual(); ut.squad.forEach(function (id) { g.players[id].tr.i = i; }); ui.refresh(); } }, lbl));
     });
-    root.appendChild(el('div', { class: 'tr-top' }, [
-      el('span', { class: 'hl b' }, t('set_all')), allSeg,
-      el('button', { class: 'btn small', onclick: function () { ut.squad.forEach(function (id) { var p = g.players[id]; p.tr.ty = M.defaultTraining(p.r); }); ui.refresh(); } }, t('tr_auto')),
-      el('div', { class: 'help' }, t('training_help'))
+    // v1.7: the staff can run the training (focus and intensity for every player, updated every week)
+    function manual() { if (au.tr) { au.tr = false; ui.toast(U.esc(t('auto_tr_off')), 'info', 3200); } }
+    var tg = el('button', { class: 'auto-tg tr-auto' + (autoOn ? ' on' : ''), onclick: function () {
+      au.tr = !au.tr; ui.sound('click');
+      if (au.tr) UFM.season.autoTraining(true);
+      UFM.save.autosave();
+      ui.toast(U.esc(t(au.tr ? 'auto_tr_on' : 'auto_tr_off')), 'info', 3200);
+      ui.refresh();
+    } }, [el('span', { class: 'sw' }, el('i')), el('span', { class: 'tx' }, [el('b', null, t('auto_tr')), el('small', null, t('auto_tr_h'))])]);
+    root.appendChild(el('div', { class: 'tr-top' + (autoOn ? ' auto' : '') }, [
+      tg,
+      el('span', { class: 'hl b tr-all' }, t('set_all')), allSeg,
+      el('button', { class: 'btn small', onclick: function () { manual(); ut.squad.forEach(function (id) { var p = g.players[id]; p.tr.ty = M.defaultTraining(p.r); }); ui.refresh(); } }, t('tr_auto')),
+      el('div', { class: 'help' }, t(autoOn ? 'training_help_auto' : 'training_help'))
     ]));
     var panel = ui.panel('tr-panel');
     var tb = el('table', { class: 'tbl' });
@@ -8329,11 +8678,11 @@ window.UFM_NAMES = {
       var seg = el('div', { class: 'seg' });
       [t('t_none'), t('t_light'), t('t_medium'), t('t_heavy')].forEach(function (lbl, i) {
         var b = el('button', { class: p.tr.i === i ? 'on' : '', onclick: function () {
-          p.tr.i = i; Array.prototype.forEach.call(seg.children, function (c, k) { c.className = k === i ? 'on' : ''; }); ui.sound('click');
+          manual(); p.tr.i = i; Array.prototype.forEach.call(seg.children, function (c, k) { c.className = k === i ? 'on' : ''; }); ui.sound('click');
         } }, lbl);
         seg.appendChild(b);
       });
-      var sel = el('select', { onchange: function () { p.tr.ty = this.value; } });
+      var sel = el('select', { onchange: function () { manual(); p.tr.ty = this.value; } });
       TR_TYPES.forEach(function (ty) { sel.appendChild(el('option', { value: ty, selected: p.tr.ty === ty }, t('tr_' + ty))); });
       if (!ui.mobile) sel.style.cssText = 'height:24px;border-radius:6px;border:1px solid #9cc4ff;background:#0d2c66;color:#fff;font-size:12px';
       var d = p.ovr - (p.ovrS || p.ovr);
@@ -8481,10 +8830,13 @@ window.UFM_NAMES = {
     var fSel = el('select', { onchange: function () { reassign(E, this.value); render(box, E, tm, opts); } });
     var boardSys = tm.user && UFM.career.boardSystems ? UFM.career.boardSystems() : null;
     M.FORMATION_KEYS.forEach(function (k) { fSel.appendChild(el('option', { value: k, selected: E.f === k }, (boardSys && boardSys.indexOf(k) >= 0 ? '★ ' : '') + ui.fname(k))); });
-    var mSel = el('select', { onchange: function () { E.m = +this.value; } });
-    [0, 1, 2, 3, 4].forEach(function (i) { mSel.appendChild(el('option', { value: i, selected: E.m === i }, t('m' + i))); });
-    var sSel = el('select', { onchange: function () { E.s = +this.value; } });
-    [0, 1, 2, 3, 4, 5, 6].forEach(function (i) { sSel.appendChild(el('option', { value: i, selected: E.s === i }, t('s' + i))); });
+    // v1.7: how well each mentality and style suits this match (●●● best … ●○○ poor)
+    var evR = (E.mode === 'team' && !tm.user) ? null : evalCached(E, tm);
+    function optTxt(k, i) { var d = evR ? fitDots(evR.rel[k + i]) : ''; return t(k + i) + (d ? '  ' + d : ''); }
+    var mSel = el('select', { onchange: function () { E.m = +this.value; render(box, E, tm, opts); } });
+    [0, 1, 2, 3, 4].forEach(function (i) { mSel.appendChild(el('option', { value: i, selected: E.m === i }, optTxt('m', i))); });
+    var sSel = el('select', { onchange: function () { E.s = +this.value; render(box, E, tm, opts); } });
+    [0, 1, 2, 3, 4, 5, 6].forEach(function (i) { sSel.appendChild(el('option', { value: i, selected: E.s === i }, optTxt('s', i))); });
     var insBtn = el('button', { class: 'btn small gold ins-btn', onclick: function () { ui.sound('click'); ui.instructionsPopup(E, tm, function () { render(box, E, tm, opts); }); } }, '⚙ ' + t('instructions') + ': ' + ui.insSummary(E.ins));
     box.appendChild(el('div', { class: 'tac-ctl' }, [
       el('label', { class: 'ctl' }, [t('formation'), fSel]), el('label', { class: 'ctl' }, [t('mentality'), mSel]), el('label', { class: 'ctl' }, [t('style'), sSel]), insBtn,
@@ -8627,17 +8979,31 @@ window.UFM_NAMES = {
     if (!nf) return { opp: null };
     return { opp: g.teams[nf.h === tm.id ? nf.a : nf.h], home: nf.h === tm.id, f: nf };
   }
+  function planStart(E) { var x = UFM.tactics.norm(E.ins); x.m = E.m; x.s = E.s; return x; }
   function evalPlan(E, tm, ctx) {
     var T = UFM.tactics;
     if (!ctx.opp) return null;
-    if (ctx.live) return T.evaluateLive(E.Mx, E.sd, E.ins);
+    if (ctx.live) return T.evaluateLive(E.Mx, E.sd, planStart(E));
     var saved = tm.tac;
     tm.tac = { f: E.f, m: E.m, s: E.s, xi: E.xi.slice(), sub: E.sub.slice(), ins: T.norm(E.ins) };
     try {
       var Mx = ctx.home ? T.prepareSides(tm, ctx.opp) : T.prepareSides(ctx.opp, tm);
-      return T.evaluate(Mx, ctx.home ? 0 : 1, E.ins);
+      return T.evaluate(Mx, ctx.home ? 0 : 1, planStart(E));
     } finally { tm.tac = saved; }
   }
+  // the evaluation is cached while nothing changes (the screen redraws on every tap)
+  function evalCached(E, tm) {
+    var ctx = insContext(E, tm);
+    var key = [E.f, E.m, E.s, E.xi.join(','), JSON.stringify(E.ins), ctx.opp ? ctx.opp.id : '', E.mode === 'match' ? E.Mx.min : ''].join('|');
+    if (E._evKey === key) return E._ev;
+    var ev = null;
+    try { ev = evalPlan(E, tm, ctx); } catch (e) { ev = null; }
+    E._evKey = key; E._ev = ev;
+    return ev;
+  }
+  ui.evalCached = evalCached;
+  function fitDots(rel) { return rel === null || rel === undefined ? '' : rel >= -0.015 ? '●●●' : rel >= -0.06 ? '●●○' : '●○○'; }
+  function fitCls(rel) { return rel === null || rel === undefined ? '' : rel >= -0.015 ? ' fit-good' : rel >= -0.06 ? ' fit-mid' : ' fit-bad'; }
   ui.instructionsPopup = function (E, tm, onDone) {
     var T = UFM.tactics, ctx = insContext(E, tm);
     var body = el('div', { class: 'ins-box' });
@@ -8647,6 +9013,18 @@ window.UFM_NAMES = {
       var ev = null;
       try { ev = evalPlan(E, tm, ctx); } catch (e) { ev = null; }
       body.appendChild(el('div', { class: 'sub ins-vs' }, ctx.opp ? t(ctx.live ? 'ins_vs_live' : 'ins_vs', { t: ctx.opp.name }) : t('ins_no_opp')));
+      // v1.7: mentality and playing style, with the same advice
+      [['m', 'mentality', [0, 1, 2, 3, 4]], ['s', 'style', [0, 1, 2, 3, 4, 5, 6]]].forEach(function (x) {
+        var k = x[0];
+        var row = el('div', { class: 'ins-row big' }, [el('div', { class: 'ins-lbl' }, [el('b', null, t(x[1])), el('div', { class: 'sub' }, t('insh_' + k))])]);
+        var seg = el('div', { class: 'ins-seg' });
+        x[2].forEach(function (v) {
+          var rel = ev ? ev.rel[k + v] : null;
+          seg.appendChild(el('button', { class: 'btn small' + (E[k] === v ? ' sel' : '') + fitCls(rel), onclick: function () { E[k] = v; ui.sound('click'); draw(); } }, [t(k + v), fitDots(rel) ? el('span', { class: 'ins-dots' }, fitDots(rel)) : null]));
+        });
+        row.appendChild(seg);
+        body.appendChild(row);
+      });
       INS_KEYS.forEach(function (k) {
         var row = el('div', { class: 'ins-row' }, [el('div', { class: 'ins-lbl' }, [el('b', null, t('ins_' + k)), el('div', { class: 'sub' }, t('insh_' + k))])]);
         var seg = el('div', { class: 'ins-seg' });
@@ -8669,7 +9047,8 @@ window.UFM_NAMES = {
         } catch (e) { an = null; }
         var notes = el('div', { class: 'ins-notes' }, [el('div', { class: 'pc-sec', style: { padding: '6px 0 2px' } }, t('ins_analysis'))]);
         (an ? an.list : []).forEach(function (x) {
-          var tone = x.k !== 'fit' && ev ? (ev.rel[x.k + E.ins[x.k]] >= -0.015 ? 'good' : ev.rel[x.k + E.ins[x.k]] < -0.06 ? 'bad' : 'info') : 'info';
+          var cv = x.k === 'm' ? E.m : x.k === 's' ? E.s : E.ins[x.k], rv = ev ? ev.rel[x.k + cv] : undefined;
+          var tone = x.k !== 'fit' && rv !== undefined ? (rv >= -0.015 ? 'good' : rv < -0.06 ? 'bad' : 'info') : (x.tone || 'info');
           notes.appendChild(el('div', { class: 'ins-note ' + tone }, [el('span', { class: 'ins-ic' }, tone === 'good' ? '✔' : tone === 'bad' ? '!' : 'i'), t(x.key, x.p)]));
         });
         if (ev) {
@@ -8688,7 +9067,7 @@ window.UFM_NAMES = {
     var wrap = el('div', null, [body, foot]);
     p = ui.popup({ title: t('ins_title'), cls: 'wide ins-pop', body: wrap, buttons: [
       { label: t('ins_assistant'), cls: 'gold', keep: true, fn: function () {
-        try { var ev = evalPlan(E, tm, ctx); if (ev) { E.ins = T.norm(ev.best); ui.sound('click'); draw(); } } catch (e) { /* no advice */ }
+        try { var ev = evalPlan(E, tm, ctx); if (ev) { E.ins = T.norm(ev.best); if (ev.best.m !== undefined) E.m = ev.best.m; if (ev.best.s !== undefined) E.s = ev.best.s; ui.sound('click'); draw(); } } catch (e) { /* no advice */ }
         return false;
       } },
       { label: t('done'), cls: 'green', esc: true, fn: function () { if (onDone) onDone(); } }
@@ -8699,7 +9078,7 @@ window.UFM_NAMES = {
   // straight from the pre-match screen: edit only the instructions of the club
   ui.teamInstructions = function (tm, onDone) {
     var E = teamEditorState(tm);
-    return ui.instructionsPopup(E, tm, function () { tm.tac.ins = UFM.tactics.norm(E.ins); UFM.save.autosave(); if (onDone) onDone(); });
+    return ui.instructionsPopup(E, tm, function () { tm.tac.ins = UFM.tactics.norm(E.ins); tm.tac.m = E.m; tm.tac.s = E.s; UFM.save.autosave(); if (onDone) onDone(); });
   };
   // how much better the assistant's plan is for the next fixture (goals per match), or null
   ui.planGap = function (tm) {
@@ -9245,7 +9624,18 @@ window.UFM_NAMES = {
     var btns = [];
     if (pend) box.appendChild(el('div', { class: 'status-box hl', style: { margin: '8px 10px 0' } }, t('offer_waiting', { v: U.money(pend.amt) })));
     else if (p.lastBid === g2.date && p.t) box.appendChild(el('div', { class: 'status-box', style: { margin: '8px 10px 0' } }, t('off_this_round')));
-    if (pend) btns.push({ label: t('withdraw_offer'), cls: 'gray', fn: function () { UFM.transfers.cancelOffer(p.id); ui.refresh(); } });
+    var neg = UFM.transfers.negActive(p);
+    if (neg) box.appendChild(el('div', { class: 'status-box hl', style: { margin: '8px 10px 0' } }, t('neg_buy_status', { c: ui.teamName(p.t), w: U.money(p.neg.want) })));
+    if (neg) {
+      btns.push({ label: t('accept_counter', { v: U.money(p.neg.want) }), cls: 'green', fn: function () {
+        var cname = ui.teamName(p.t), r = UFM.transfers.acceptCounter(p.id);
+        setTimeout(function () {
+          if (r.r === 'accepted') { ui.sound('ach'); UFM.save.autosave(); ui.alert(t('neg_buy_ok', { c: cname, p: p.n, v: U.money(r.fee) })); ui.refresh(); ui.achToasts(); }
+          else ui.alert(t(r.r === 'cash' ? 'off_cash' : r.r === 'squad' ? 'ans_squad_s' : 'off_expired'));
+        }, 40);
+      } });
+      btns.push({ label: t('negotiate'), cls: 'gold', fn: function () { setTimeout(function () { ui.buyNegPopup(p.id, function () { ui.refresh(); }); }, 30); } });
+    } else if (pend) btns.push({ label: t('withdraw_offer'), cls: 'gray', fn: function () { UFM.transfers.cancelOffer(p.id); ui.refresh(); } });
     else if (!(p.lastBid === g2.date && p.t)) btns.push({ label: p.t ? t('make_offer') : t('sign_free'), cls: 'green', fn: function () { if (p.t) offerPopup(p); else sendOffer(p, 0); } });
     btns.push({ label: t('close'), cls: 'red', esc: true });
     var pop = ui.popup({ title: p.t ? ui.teamName(p.t) : t('free_agent'), body: box, buttons: btns });
@@ -10035,6 +10425,49 @@ window.UFM_NAMES = {
       { label: t('cancel'), cls: 'red', esc: true, fn: function () { setTimeout(function () { bidPopup(o, next); }, 30); } }
     ] });
   }
+  // v1.7: negotiating the price of a player you want to buy (the club has told you its price)
+  ui.buyNegPopup = function (pid, onDone) {
+    var g = G(), p = g.players[pid];
+    if (!UFM.transfers.negActive(p)) { ui.alert(t('off_expired')); if (onDone) onDone({ r: 'expired' }); return; }
+    var n = p.neg, club = ui.teamName(p.t), me = g.teams[g.userTeam];
+    var lo = n.last || Math.round(n.want * 0.7 / 1e4) * 1e4;
+    var amt = Math.round((lo + (n.want - lo) * 0.5) / 1e4) * 1e4;
+    var unit = n.want >= 20e6 ? 1e6 : n.want >= 3e6 ? 1e5 : n.want >= 500000 ? 5e4 : 1e4;
+    var amtEl = el('div', { class: 'offer-amt' });
+    function upd() { amtEl.textContent = U.money(amt, { full: true }); }
+    upd();
+    function step(d) { return el('button', { class: 'btn small ' + (d < 0 ? 'red' : 'green'), onclick: function () { amt = U.clamp(amt + d, unit, n.want); upd(); ui.sound('click'); } }, (d > 0 ? '+' : '−') + U.money(Math.abs(d))); }
+    function quick(f, lbl) { return el('button', { class: 'btn small gray', onclick: function () { amt = Math.round(n.want * f / 1e4) * 1e4; upd(); ui.sound('click'); } }, lbl); }
+    var body = el('div', { class: 'offer-box' }, [
+      el('div', null, t('neg_buy_text', { c: club, p: p.n, w: U.money(n.want), v: U.money(n.last || 0) })),
+      el('div', { class: 'sub' }, t('est_value', { v: U.money(p.val) }) + ' · ' + t('club_cash') + ': ' + U.money(me.cash) + (n.pat <= 0 ? ' · ' + t('neg_buy_last') : '')),
+      amtEl,
+      el('div', { class: 'offer-steps' }, [step(-unit * 10), step(-unit), step(unit), step(unit * 10)]),
+      el('div', { class: 'offer-steps' }, [quick(0.85, '85%'), quick(0.9, '90%'), quick(0.95, '95%'), quick(1, '100%')])
+    ]);
+    function result(r) {
+      setTimeout(function () {
+        if (r.r === 'accepted') { ui.sound('ach'); ui.alert(t('neg_buy_ok', { c: club, p: p.n, v: U.money(r.fee) })); }
+        else if (r.r === 'counter') { ui.sound('click'); ui.popup({ title: t('neg_title'), body: t(r.last ? 'neg_buy_counter_last' : 'neg_buy_counter', { c: club, v: U.money(r.amt) }), buttons: [
+          { label: t('accept_counter', { v: U.money(r.amt) }), cls: 'green', fn: function () { result(UFM.transfers.acceptCounter(pid)); } },
+          { label: t('negotiate'), cls: 'gold', fn: function () { setTimeout(function () { ui.buyNegPopup(pid, onDone); }, 30); } },
+          { label: t('neg_give_up'), cls: 'red', esc: true }
+        ] }); }
+        else if (r.r === 'walked') { ui.sound('bad'); ui.alert(t('neg_buy_walked', { c: club, p: p.n })); }
+        else if (r.r === 'cash') ui.alert(t('off_cash'));
+        else if (r.r === 'squad') ui.alert(t('off_squad', { n: UFM.transfers.MAX_SQUAD }));
+        else if (r.r === 'window') ui.alert(ui.windowMsg());
+        else ui.alert(t('off_expired'));
+        if (onDone) onDone(r);
+        if (UFM.save && UFM.save.autosave) UFM.save.autosave();
+      }, 40);
+    }
+    ui.popup({ title: t('neg_title'), body: body, buttons: [
+      { label: t('neg_send'), cls: 'green', fn: function () { result(UFM.transfers.buyNegotiate(pid, amt)); } },
+      { label: t('accept_counter', { v: U.money(n.want) }), cls: 'gold', fn: function () { result(UFM.transfers.acceptCounter(pid)); } },
+      { label: t('neg_give_up'), cls: 'red', esc: true }
+    ] });
+  };
   // unexpected events
   var EV_ICON = { party: 'whistle', row: 'squad', family: 'squad', injury_risk: 'inj', flu: 'inj', sponsor_deal: 'money', fac_tr: 'training', fac_yth: 'star', fac_med: 'inj',
     expand: 'office', fans_broken: 'squad', derby: 'fire', board_ult: 'clock', board_ult_ok: 'trophy', job_mid: 'office',
@@ -10103,7 +10536,7 @@ window.UFM_NAMES = {
       var txt;
       switch (x.r) {
         case 'accepted': txt = t('ans_accepted', { c: club, p: x.name, v: U.money(x.amt) }); anyBuy = true; break;
-        case 'counter': txt = t('ans_counter', { c: club, p: x.name, v: U.money(x.amt), w: U.money(x.counter) }); break;
+        case 'counter': txt = t('ans_want', { c: club, p: x.name, v: U.money(x.amt), w: U.money(x.counter) }); break;
         case 'rejected': txt = t(x.hint === 'far' ? 'ans_rejected_far' : 'ans_rejected_close', { c: club, p: x.name, v: U.money(x.amt) }); break;
         case 'refused': txt = t(x.why === 'step_down' ? 'off_refused_step_down' : 'off_refused_rep', { p: x.name }); break;
         case 'gone': txt = t('ans_gone', { p: x.name, t: x.to && g.teams[x.to] ? g.teams[x.to].name : t('free_agent') }); break;
@@ -10115,12 +10548,24 @@ window.UFM_NAMES = {
       var main = el('div', { class: 'ans-txt' }, txt);
       row.appendChild(main);
       if (x.r === 'counter') {
-        var b = el('button', { class: 'btn small green', onclick: function () {
-          var r2 = UFM.transfers.acceptCounter(x.pid);
-          if (r2.r === 'accepted') { ui.sound('ach'); b.replaceWith(el('b', { class: 'good' }, t('signed'))); ui.achToasts(); }
-          else { b.replaceWith(el('b', { class: 'bad' }, t(r2.r === 'cash' ? 'off_cash' : 'off_expired'))); }
-        } }, t('accept_counter', { v: U.money(x.counter) }));
-        row.appendChild(b);
+        // v1.7: pay what they ask, or negotiate the price
+        var acts = el('div', { class: 'ans-acts' });
+        var done = function (r2) {
+          acts.innerHTML = '';
+          if (r2.r === 'accepted') { acts.appendChild(el('b', { class: 'good' }, t('signed_for', { v: U.money(r2.fee) }))); ui.achToasts(); }
+          else if (r2.r === 'counter') { main.textContent = t('neg_buy_now', { c: club, p: x.name, v: U.money(r2.amt) }); addBtns(r2.amt); }
+          else acts.appendChild(el('b', { class: 'bad' }, t(r2.r === 'walked' ? 'neg_buy_walked_s' : r2.r === 'cash' ? 'off_cash' : r2.r === 'squad' ? 'ans_squad_s' : 'off_expired')));
+        };
+        var addBtns = function (want) {
+          acts.appendChild(el('button', { class: 'btn small green', onclick: function () {
+            var r2 = UFM.transfers.acceptCounter(x.pid);
+            if (r2.r === 'accepted') { ui.sound('ach'); done(r2); } else done(r2);
+          } }, t('accept_counter', { v: U.money(want) })));
+          acts.appendChild(el('button', { class: 'btn small gold', onclick: function () { ui.buyNegPopup(x.pid, done); } }, t('negotiate')));
+        };
+        if (x.far) main.appendChild(el('div', { class: 'sub', style: { fontSize: '12px' } }, t('ans_far_note')));
+        addBtns(x.counter);
+        row.appendChild(acts);
       }
       box.appendChild(row);
     });

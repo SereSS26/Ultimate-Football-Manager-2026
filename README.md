@@ -6,7 +6,7 @@ Un remake făcut de un fan după jocul flash „Ultimate Football Management 13-
 
 **Joacă aici:** https://seress26.github.io/Ultimate-Football-Manager-2026/
 
-**Versiunea curentă: 1.6** — secund automat (alege instrucțiunile pentru fiecare adversar) și rotație automată (odihnește jucătorii obosiți), ambele pornite din oficiu și reglabile din Tactică; sistemele impuse de conducere au mereu postul vedetei clubului. Versiunea apare jos pe ecranul de titlu al jocului.
+**Versiunea curentă: 1.7** — mentalitatea și stilul de joc contează cu adevărat (depind de jucători și de adversar, cu ●●● pentru ce se potrivește), antrenament automat, negociere la cumpărare (clubul îți spune cât vrea), buton „Nu e de vânzare”. Din 1.6: secund automat, rotație automată, sistemele conducerii au postul vedetei. Versiunea apare jos pe ecranul de titlu al jocului.
 
 ## Pe iPhone, ca aplicație (și fără internet)
 
