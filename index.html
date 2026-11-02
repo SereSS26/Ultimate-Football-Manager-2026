@@ -13,12 +13,14 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="splash-2556x1179.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1290x2796.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <style>
-/* phone app: keep clear of the notch / Dynamic Island and the home indicator; no double-tap zoom */
+/* phone app: no double-tap zoom, no text size changes (safe areas are handled in the game's own styles) */
 html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
-#app { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
-body.m .layer { padding-bottom: 28px; }
 </style>
 
 <style>
@@ -945,6 +947,76 @@ body.m .pm-board { min-height: 0; margin: 4px 0; }
 body.m .club-panel { overflow: visible; }
 body.m .fac-row { padding: 9px 12px; }
 body.m .sq-mor { font-size: 11.5px; }
+
+/* ==================================================================================
+   v1.5.1 — iPhone (Dynamic Island / notch models, e.g. iPhone 14 Pro):
+   safe areas, a strip behind the status bar, room for the home indicator, 44 pt touch targets
+   ================================================================================== */
+:root {
+  --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px); --sar: env(safe-area-inset-right, 0px);
+  --gl: max(16px, var(--sal)); --gr: max(16px, var(--sar));
+}
+body { -webkit-touch-callout: none; }
+/* the game starts below the status bar and the Dynamic Island; behind them a strip in the colours of the game */
+body.m #app { padding-top: var(--sat); }
+body.m::before { content: ""; position: fixed; left: 0; right: 0; top: 0; height: var(--sat); z-index: 300; pointer-events: none;
+  background: linear-gradient(180deg, #06173b, #12387d); box-shadow: 0 1px 0 rgba(140, 190, 255, .18); }
+body.m[data-scr="title"]::before { background: linear-gradient(180deg, rgba(2, 8, 24, .78), rgba(2, 8, 24, .25)); box-shadow: none; }
+body.m[data-scr="match"]::before { background: #05122f; }
+/* the home indicator: the last line of every screen and the bars stuck to the bottom stay clear of it */
+body.m .layer { padding-bottom: calc(24px + var(--sab)); }
+body.m .layer > .pm-btns, body.m .layer > .bottom-bar { padding-bottom: calc(8px + var(--sab)); }
+body.m .layer > .select-bar { bottom: var(--sab) !important; }
+body.m .tac-btns { padding-bottom: calc(10px + var(--sab)); }
+body.m .layer.scr-match { padding-bottom: calc(8px + var(--sab)); }
+body.m .chg > .layer { padding-bottom: calc(24px + var(--sab)); }
+body.m .veil { padding-bottom: var(--sab); padding-left: var(--sal); padding-right: var(--sar); }
+body.m .popup { max-height: calc(100% - 24px - var(--sab)); }
+body.m .toasts { top: 10px; }
+/* fingers, not mouse pointers: 44 pt buttons, a little more room on small controls */
+body.m .btn { min-height: 44px; }
+body.m .btn.small { min-height: 38px; }
+body.m .hdr .btn { min-height: 44px; }
+body.m .fx-tabs .btn { min-height: 38px; font-size: 13px; }
+body.m .tr-card .seg button { min-height: 36px; }
+body.m .club-chip { height: 40px; }
+body.m .flags .flag { width: 48px; height: 32px; }
+body.m .title-cur .btn { min-height: 36px; }
+body.m table.tbl th { font-size: 11px; }
+@media (orientation: landscape) {
+  /* the Dynamic Island is on a side: the match screen keeps its controls clear of it too */
+  body.m .layer.scr-match { padding-left: max(10px, var(--sal)); padding-right: max(10px, var(--sar)); }
+}
+/* bars stuck to the bottom of the screen: full width, flush with the bottom edge, buttons above the home indicator */
+html { touch-action: manipulation; }
+body.m .layer:has(> .pm-btns), body.m .layer:has(> .bottom-bar), body.m .layer:has(> .select-bar), body.m .layer:has(.tac-btns) { padding-bottom: 0; }
+body.m .layer > .pm-btns, body.m .layer > .bottom-bar {
+  margin: 0 calc(-1 * var(--gr)) 0 calc(-1 * var(--gl)); padding: 10px var(--gr) calc(10px + var(--sab)) var(--gl);
+  background: linear-gradient(180deg, rgba(3, 12, 34, 0), #030c22 22px); }
+body.m .layer > .select-bar { bottom: 0 !important; margin: 0 calc(-1 * var(--gr)) 0 calc(-1 * var(--gl)); padding: 12px var(--gr) calc(12px + var(--sab)) var(--gl);
+  border-radius: 16px 16px 0 0; border-width: 2px 0 0; background: #05122f; }
+body.m .layer > .tac-btns { position: sticky !important; bottom: 0 !important; left: auto !important; right: auto !important; z-index: 12; display: flex; gap: 8px;
+  margin: 0 calc(-1 * var(--gr)) 0 calc(-1 * var(--gl)); padding: 10px var(--gr) calc(10px + var(--sab)) var(--gl);
+  background: #0a1f4e; border-top: 1px solid var(--line2); border-radius: 16px 16px 0 0; box-shadow: 0 -6px 16px rgba(0, 0, 0, .45); }
+body.m .layer > .tac-btns .btn { flex: 1 1 0; min-width: 0; }
+body.m .chg > .layer:has(> .tac-btns) { padding-bottom: 0; }
+body.m .chg > .hdr { background: linear-gradient(180deg, #1d4f9e, #0b2559); }
+/* phone held sideways (e.g. iPhone 14 Pro: 852 x 393): title in two columns, compact pop-ups */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.m .layer.scr-title { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr auto; align-items: center; column-gap: 28px; padding-top: 50px; }
+  body.m .layer.scr-title > .logo { grid-column: 1; grid-row: 1; margin-top: 0; }
+  body.m .layer.scr-title > .title-menu { grid-column: 2; grid-row: 1; margin: 0; max-width: 360px; }
+  body.m .layer.scr-title > .title-foot, body.m .layer.scr-title > .cloud-line { grid-column: 1 / -1; grid-row: 2; }
+  body.m .layer.scr-title .logo-main { font-size: 32px; }
+  body.m .layer.scr-title .title-menu .btn { min-height: 46px; }
+  body.m .popup-title { font-size: 16px; padding: 8px 14px 4px; }
+  body.m .popup-body { font-size: 13.5px; padding: 4px 14px; }
+  body.m .popup { padding-bottom: 10px; }
+  body.m .popup-btns { padding-top: 6px; }
+  body.m .ev-ic, body.m .ev-ic svg { width: 40px; height: 40px; }
+  body.m .ev-hints { font-size: 12px; margin-top: 6px; gap: 3px; }
+}
 
 </style>
 </head>
@@ -7036,6 +7108,7 @@ window.UFM_NAMES = {
     cur = { name: name, arg: arg || {} };
     layer.innerHTML = '';
     layer.className = 'layer scr-' + name;
+    document.body.setAttribute('data-scr', name); // lets the phone layout tint the status bar strip per screen
     try { ui.screens[name](layer, cur.arg); }
     catch (e) { if (W.console) console.error(e); ui.alert('Error: ' + (e && e.message)); }
     layer.scrollTop = same ? keep : 0;
@@ -7443,7 +7516,7 @@ window.UFM_NAMES = {
       ])
     ]));
     if (UFM.cloud && UFM.cloud.ready()) root.appendChild(el('div', { class: 'cloud-line', style: ui.abs({ position: 'absolute', left: '0', right: '0', bottom: '34px', textAlign: 'center', fontSize: '12.5px', color: '#cfe3ff' }) }, '☁ ' + t('cloud_on')));
-    root.appendChild(el('div', { class: 'title-foot' }, 'v1.5 · ' + t('foot_note')));
+    root.appendChild(el('div', { class: 'title-foot' }, 'v1.5.1 · ' + t('foot_note')));
   };
 
   function howTo() { ui.popup({ cls: 'wide left', title: t('how_title'), body: t('how_text'), buttons: [{ label: t('close'), cls: 'green', esc: true }] }); }
@@ -8331,8 +8404,10 @@ window.UFM_NAMES = {
       E.mode === 'team' ? el('button', { class: 'btn gold', onclick: function () { autofill(E, tm); E.sel = null; ui.sound('click'); render(box, E, tm, opts); } }, t('autofill')) : null,
       el('button', { class: 'btn green', onclick: function () { opts.done(); } }, t('done'))
     ]);
-    list.appendChild(btns);
+    // phone: the buttons are a bar stuck to the bottom of the screen, always within reach
+    if (!ui.mobile) list.appendChild(btns);
     box.appendChild(list);
+    if (ui.mobile) box.appendChild(btns);
     var wrap = rows;
     if (box._scroll) wrap.scrollTop = box._scroll;
     wrap.addEventListener('scroll', function () { box._scroll = wrap.scrollTop; });
