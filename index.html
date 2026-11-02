@@ -1064,6 +1064,29 @@ body.m .ans-row .ans-txt { flex: 1 1 calc(100% - 40px); }
 body.m .ans-row .ans-acts { flex: 1 1 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 body.m .ans-row .ans-acts .btn { width: auto; min-height: 44px; }
 
+/* ------------------------------------------------------------------ v1.8: captain and set pieces */
+.cap-badge { position: absolute; left: 50%; top: 0; margin-left: 10px; width: 17px; height: 17px; border-radius: 50%; background: #ffd23f; color: #3a2a00; font: 800 11px/17px var(--font2); text-align: center; box-shadow: 0 1px 3px rgba(0, 0, 0, .6); }
+.sq-flag.cap { background: #ffd23f; color: #3a2a00; font-weight: 800; }
+.tac-ctl .roles-btn { margin-left: auto; min-height: 34px; font-size: 12.5px; padding: 4px 10px; white-space: nowrap; flex: 0 0 auto; }
+body.m .tac-ctl > .roles-btn { grid-column: 1 / -1; margin-left: 0; min-height: 44px; font-size: 14px; }
+.roles-box { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.roles-intro { font-size: 12.5px; line-height: 1.35; }
+.role-row { display: grid; grid-template-columns: 220px 1fr; gap: 6px 14px; align-items: center; padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, .22); border-left: 4px solid var(--sub); }
+.role-row.good { border-left-color: var(--good); } .role-row.mid { border-left-color: var(--hi); } .role-row.bad { border-left-color: var(--bad); }
+.role-head b { font: 15px var(--font); font-weight: bold; color: var(--hi); }
+.role-head .sub { font-size: 11.5px; line-height: 1.3; }
+.role-row select { width: 100%; height: 38px; border-radius: 8px; border: 1px solid #9cc4ff; background: #0d2c66; color: #fff; font-size: 14px; padding: 0 8px; min-width: 0; }
+.role-eff { grid-column: 1 / -1; font-size: 13px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.role-eff .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sub); flex: 0 0 9px; }
+.role-row.good .dot { background: var(--good); } .role-row.mid .dot { background: var(--hi); } .role-row.bad .dot { background: var(--bad); }
+body.m .role-row { grid-template-columns: 1fr; }
+body.m .role-row select { height: 44px; font-size: 15px; }
+.pm-roles { font-size: 12px; padding-top: 6px; }
+.pm-tbtns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.roles-line { color: #ffd23f; }
+body:not(.m) .tac-ctl select { max-width: 165px; }
+body:not(.m) .pm-mid .pm-scout { padding-top: 6px; line-height: 1.35; }
+
 </style>
 </head>
 <body>
@@ -2278,6 +2301,53 @@ window.UFM_NAMES = {
   };
   X.en.how_text = S.en.how_text.replace('<p style="text-align:center"><b>Made by Artur with ♥️</b></p>', '') + '<p><b>Mentality and style (v1.7).</b> A defensive mentality means fewer chances for both sides (good when they are stronger), an attacking one means more (good when you are stronger). Each playing style needs certain players (long balls: strong headers up front; wings: crossers; short passing: good passers; hard tackling: tough players…) and works better or worse against certain opponents. The ●●● marks show what suits the next match; the auto assistant picks all of it for you.</p><p><b>Auto training</b> (Club → Training): the staff sets focus and intensity every week. <b>Not for sale</b> (player card): no club will bid for him. When your bid is too low, the club tells you its price and you can <b>negotiate</b>.</p><p style="text-align:center"><b>Made by Artur with ♥️</b></p>';
   X.ro.how_text = S.ro.how_text.replace('<p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>', '') + '<p><b>Mentalitate și stil (v1.7).</b> Mentalitatea defensivă înseamnă mai puține ocazii pentru ambele echipe (bună când adversarul e mai puternic), cea ofensivă mai multe (bună când tu ești mai puternic). Fiecare stil de joc are nevoie de anumiți jucători (mingi lungi: vârfuri bune la cap; pe aripi: centrări bune; pase scurte: pasatori buni; joc dur: jucători agresivi…) și merge mai bine sau mai rău contra anumitor adversari. Semnele ●●● arată ce se potrivește pentru meciul următor; secundul automat le alege pe toate pentru tine.</p><p><b>Antrenament automat</b> (Club → Antrenament): staff-ul alege tipul și intensitatea în fiecare săptămână. <b>Nu e de vânzare</b> (fișa jucătorului): niciun club nu mai face oferte pentru el. Când oferta ta e prea mică, clubul îți spune cât vrea și poți <b>negocia</b>.</p><p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>';
+  Object.keys(X).forEach(function (l) { for (var k in X[l]) S[l][k] = X[l][k]; });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Ultimate Football Management 26-27 — texts added in v1.8 (captain and set-piece takers) */
+(function (W) {
+  'use strict';
+  var S = W.UFM.i18n.S;
+  var X = {
+    en: {
+      roles_btn: 'Captain & set pieces', roles_btn_s: 'Roles', roles_title: 'CAPTAIN AND SET PIECES',
+      roles_intro: 'Choose who wears the armband and who takes the set pieces. Quality and experience count: a good taker scores more penalties and free kicks, an experienced captain keeps morale up. ★ = best suited; * = not in the first eleven now. Auto = the best player on the pitch.',
+      role_cap: 'Captain', role_pen: 'Penalties', role_cor: 'Corners', role_fk: 'Free kicks',
+      role_cap_h: 'Experience, quality, mood and years at the club. Morale holds up better after defeats, a little more strength on the pitch and in comebacks.',
+      role_pen_h: 'Shooting and nerve (experience). He also goes first in a shoot-out.',
+      role_cor_h: 'Crossing and passing (+ experience). More chances from corners.',
+      role_fk_h: 'Shooting, vision and passing (+ experience). Direct free-kick goals and better crossed free kicks.',
+      role_auto: 'Auto: {p}',
+      role_cap_eff: 'leadership {v}/100 (experience {e}%)', role_pen_eff: '~{v}% chance to score',
+      role_fk_eff: '~{v}% chance to score a direct free kick', role_cor_eff: 'delivery {v}/100', role_not_xi: 'not in the first eleven now',
+      cap_q_old: '{p} loses the armband (morale −6).', cap_q_new: '{p} becomes captain (morale +5).',
+      cap_q_weak: 'Careful: {p} has too little experience to lead the dressing room — squad morale drops a little.',
+      role_pen_s: 'Pen', role_cor_s: 'Corners', role_fk_s: 'FK',
+      n_cap_new: '{p} is the new club captain.', n_cap_lost: '{p} is no longer captain and is disappointed.',
+      c_fk_cross: ['{p} curls the free kick into the box.', '{p} swings the free kick towards the far post.']
+    },
+    ro: {
+      roles_btn: 'Căpitan și faze fixe', roles_btn_s: 'Roluri', roles_title: 'CĂPITAN ȘI FAZE FIXE',
+      roles_intro: 'Alege cine poartă banderola și cine execută fazele fixe. Contează calitatea și experiența: un executant bun transformă mai multe penalty-uri și lovituri libere, iar un căpitan cu experiență ține moralul sus. ★ = cel mai potrivit; * = nu e acum în primul 11. Automat = cel mai bun de pe teren.',
+      role_cap: 'Căpitan', role_pen: 'Penalty-uri', role_cor: 'Cornere', role_fk: 'Lovituri libere',
+      role_cap_h: 'Experiență, calitate, moral și ani la club. Moralul rezistă mai bine după înfrângeri, puțin mai multă forță pe teren și la revenire.',
+      role_pen_h: 'Șutul și sângele rece (experiența). Execută primul și la loviturile de departajare.',
+      role_cor_h: 'Centrarea și pasa (+ experiență). Mai multe ocazii din cornere.',
+      role_fk_h: 'Șut, creativitate și pasă (+ experiență). Goluri din lovituri libere directe și centrări mai bune din lovituri libere.',
+      role_auto: 'Automat: {p}',
+      role_cap_eff: 'leadership {v}/100 (experiență {e}%)', role_pen_eff: '~{v}% șanse de gol',
+      role_fk_eff: '~{v}% șanse de gol din lovitură liberă directă', role_cor_eff: 'calitatea centrărilor {v}/100', role_not_xi: 'nu e acum în primul 11',
+      cap_q_old: '{p} pierde banderola (moral −6).', cap_q_new: '{p} devine căpitan (moral +5).',
+      cap_q_weak: 'Atenție: {p} are prea puțină experiență ca să conducă vestiarul — moralul lotului scade puțin.',
+      role_pen_s: 'Pen', role_cor_s: 'Cornere', role_fk_s: 'LL',
+      n_cap_new: '{p} este noul căpitan al echipei.', n_cap_lost: '{p} nu mai este căpitan și e dezamăgit.',
+      c_fk_cross: ['{p} centrează lovitura liberă în careu.', '{p} trimite lovitura liberă spre bara a doua.']
+    }
+  };
+  X.en.how_text = S.en.how_text.replace('<p style="text-align:center"><b>Made by Artur with ♥️</b></p>', '') + '<p><b>Captain and set pieces (v1.8, Tactics → Captain & set pieces).</b> An experienced, good captain keeps morale up after defeats and gives the side a little more on the pitch; a young one can unsettle the dressing room. Penalties, corners and free kicks depend on the taker\'s technique and experience (penalties: from about 69% to 77% scored).</p><p style="text-align:center"><b>Made by Artur with ♥️</b></p>';
+  X.ro.how_text = S.ro.how_text.replace('<p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>', '') + '<p><b>Căpitan și faze fixe (v1.8, Tactică → Căpitan și faze fixe).</b> Un căpitan bun și cu experiență ține moralul sus după înfrângeri și dă echipei puțin în plus pe teren; unul tânăr poate tulbura vestiarul. Penalty-urile, cornerele și loviturile libere depind de tehnica și experiența executantului (penalty-uri: de la ~69% la ~77% transformate).</p><p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>';
   Object.keys(X).forEach(function (l) { for (var k in X[l]) S[l][k] = X[l][k]; });
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -3664,7 +3734,8 @@ window.UFM_NAMES = {
     var conv = (w.n * BG.n + w.l * BG.l + w.h * BG.h * Math.exp(-((D.apt.cbHea || 72) - 72) * 0.4 / 30) + w.o * BG.o) / tot;
     conv *= (0.9 + 0.2 * q) * finishing(S);
     var pShot = 0.4 + 0.25 * (q - 0.5);
-    var corner = (1 - 0.0075 - pShot) * 0.22 * 0.27 * BG.h * (0.9 + 0.2 * q);
+    var cq = S.corQ === undefined ? 0.4 : S.corQ;
+    var corner = (1 - 0.0075 - pShot) * 0.22 * 0.27 * (0.7 + 0.6 * cq) * (0.85 + 0.3 * cq) * BG.h * (0.9 + 0.2 * q);
     return { perAttack: 0.0075 * 0.76 + pShot * conv + corner, q: q };
   }
   function estimate(Mx) {
@@ -3842,6 +3913,123 @@ window.UFM_NAMES = {
 
 </script>
 <script>
+/* Ultimate Football Management 26-27 — captain and set-piece takers (v1.8)
+   The captain's leadership steadies the team (morale after defeats, a little strength on the pitch);
+   penalties, corners and free kicks depend on the taker's technique and his experience. */
+(function (W) {
+  'use strict';
+  var UFM = W.UFM = W.UFM || {};
+  var U = UFM.util, M = UFM.model, A = M.A;
+  function G() { return UFM.G(); }
+  var ROLES = ['cap', 'pen', 'cor', 'fk'];
+
+  // matches played (this season and the seasons played in the game)
+  function apps(p) { var n = p.s ? p.s.ap + p.s.sb : 0; (p.car || []).forEach(function (c) { n += c.ap || 0; }); return n; }
+  // experience 0..1: years as a footballer and matches played
+  function experience(p) { return U.clamp(0.8 * U.clamp((p.a - 17) / 13, 0, 1) + 0.2 * Math.min(1, apps(p) / 150), 0, 1); }
+  // leadership 0..1: experience, quality, mood and years at the club
+  function leadership(p) {
+    var g = G(), tenure = p.t && p.joined !== undefined && p.joined > 0 && g.season - p.joined >= 2 ? 0.08 : 0;
+    return U.clamp(0.5 * experience(p) + 0.3 * U.clamp((p.ovr - 62) / 26, 0, 1) + 0.2 * U.clamp(p.mor / 100, 0, 1) + tenure - (p.r === 'GK' ? 0.03 : 0), 0, 1);
+  }
+  // set-piece skills (same scale as the attributes)
+  function penSkill(p) { return 0.72 * p.at[A.SHO] + 0.28 * (45 + 50 * experience(p)) + (p.mor - 65) * 0.04; }
+  function fkSkill(p) { return 0.5 * p.at[A.SHO] + 0.25 * p.at[A.CRE] + 0.25 * p.at[A.PAS] + (experience(p) - 0.5) * 8; }
+  function cornerSkill(p) { return 0.8 * p.at[A.CRO] + 0.2 * p.at[A.PAS] + (experience(p) - 0.5) * 6; }
+  function score(role, p) {
+    if (!p) return -1;
+    if (role === 'cap') return leadership(p) * 100;
+    if (p.r === 'GK') return -1;
+    return role === 'pen' ? penSkill(p) : role === 'fk' ? fkSkill(p) : cornerSkill(p);
+  }
+  // the best candidate in a list of players
+  function bestOf(role, players) {
+    var b = null, bv = -1e9;
+    players.forEach(function (p) { if (!p) return; var v = score(role, p); if (v > bv) { bv = v; b = p; } });
+    return b;
+  }
+  function chosen(t) { if (!t.tac.sp) t.tac.sp = {}; return t.tac.sp; }
+  // the club's captain: the user's choice (while he is at the club), otherwise the best leader among the regulars
+  function captainOf(t) {
+    var g = G(), sp = t.tac && t.tac.sp, p = sp && sp.cap ? g.players[sp.cap] : null;
+    if (p && p.t === t.id) return p;
+    var regs = (t.tac.xi || []).map(function (id) { return g.players[id]; }).filter(Boolean);
+    if (!regs.length) regs = t.squad.map(function (id) { return g.players[id]; });
+    return bestOf('cap', regs);
+  }
+  // the player who takes a set piece in a match: the chosen one if he is on the pitch, otherwise the best on the pitch
+  function takerOn(S, role) {
+    var g = G(), on = S.on.map(function (o) { return g.players[o.pid]; });
+    var pref = S.sp && S.sp[role] ? g.players[S.sp[role]] : null;
+    if (pref && S.on.some(function (o) { return o.pid === pref.id; }) && (role === 'cap' || pref.r !== 'GK')) return pref;
+    return bestOf(role, on);
+  }
+  // captain on the pitch: full leadership for the club captain, a little less for whoever wears the armband instead
+  function capLead(S) {
+    var g = G(), cap = S.cap ? g.players[S.cap] : null;
+    if (cap && S.on.some(function (o) { return o.pid === cap.id; })) return leadership(cap);
+    var b = bestOf('cap', S.on.map(function (o) { return g.players[o.pid]; }));
+    return b ? leadership(b) * 0.8 : 0.3;
+  }
+  // corner / crossed free kick quality 0..1
+  function crossQ(p) { return p ? U.clamp((cornerSkill(p) - 60) / 30, 0, 1) : 0.4; }
+
+  // ----- the user's choices
+  // what changes when the user names a new captain (shown before he confirms)
+  function capChange(t, pid) {
+    var g = G(), old = captainOf(t), p = g.players[pid];
+    return { old: old && old.id !== pid ? old : null, lead: p ? leadership(p) : 0, weak: p ? leadership(p) < 0.35 : false };
+  }
+  function setRole(role, pid) {
+    var g = G(), t = g.teams[g.userTeam], sp = chosen(t);
+    pid = pid ? +pid : null;
+    if (role === 'cap') {
+      var ch = pid ? capChange(t, pid) : { old: null };
+      if (ch.old && pid) {
+        ch.old.mor = U.clamp(ch.old.mor - 6, 5, 100);            // losing the armband hurts
+        UFM.season.addNews('cap_lost', { p: ch.old.n });
+      }
+      if (pid) {
+        var p = g.players[pid];
+        p.mor = U.clamp(p.mor + 5, 5, 100);
+        if (ch.weak) t.squad.forEach(function (id) { if (id !== pid) { var q = g.players[id]; q.mor = U.clamp(q.mor - 2, 5, 100); } }); // the dressing room does not follow him
+        UFM.season.addNews('cap_new', { p: p.n });
+      }
+    }
+    sp[role] = pid;
+    return true;
+  }
+  // for the screens: who does what for the user's club (chosen or automatic) and how good he is at it
+  function summary(t) {
+    var g = G(), sp = chosen(t), out = {};
+    var xi = (t.tac.xi || []).map(function (id) { return g.players[id]; }).filter(Boolean);
+    ROLES.forEach(function (r) {
+      var p = sp[r] ? g.players[sp[r]] : null;
+      if (p && p.t !== t.id) { sp[r] = null; p = null; }
+      var auto = !p;
+      if (auto) p = r === 'cap' ? captainOf(t) : bestOf(r, xi);
+      out[r] = { p: p, auto: auto };
+    });
+    return out;
+  }
+  // estimated chances (against an average keeper) for the role screen
+  function estimate(role, p) {
+    if (!p) return null;
+    if (role === 'pen') return U.clamp(0.75 + (penSkill(p) - 74) / 300, 0.5, 0.92);
+    if (role === 'fk') return 0.06 * Math.exp((fkSkill(p) - 74) / 20);
+    if (role === 'cor') return crossQ(p);
+    return leadership(p);
+  }
+
+  UFM.sp = {
+    ROLES: ROLES, experience: experience, leadership: leadership, penSkill: penSkill, fkSkill: fkSkill, cornerSkill: cornerSkill, score: score,
+    bestOf: bestOf, captainOf: captainOf, takerOn: takerOn, capLead: capLead, crossQ: crossQ, capChange: capChange, setRole: setRole,
+    summary: summary, estimate: estimate, apps: apps
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* Ultimate Football Management 26-27 — match engine */
 (function (W) {
   'use strict';
@@ -3890,6 +4078,9 @@ window.UFM_NAMES = {
       out0: team.squad.filter(function (id) { var p = g.players[id]; return p && !UFM.game.available(p); })
     };
     on.forEach(function (o) { S.rt[o.pid] = 6.0; S.startMin[o.pid] = 0; });
+    // v1.8: captain and set-piece takers chosen by the club
+    S.sp = {}; var tsp = team.tac.sp || {}; ['pen', 'cor', 'fk'].forEach(function (k) { if (tsp[k]) S.sp[k] = tsp[k]; });
+    var cap = UFM.sp ? UFM.sp.captainOf(team) : null; S.cap = cap ? cap.id : null;
     calcStr(S);
     return S;
   }
@@ -3898,7 +4089,10 @@ window.UFM_NAMES = {
     var g = G();
     if (D) { if (D.apt) S.foeApt = D.apt; S.foeIns = D.ins; }
     if (form) S.form = form;
-    form = S.form || 1;
+    // v1.8: the captain on the pitch steadies the side (a good leader +1.5%, an inexperienced one -1%)
+    S.capLead = UFM.sp ? UFM.sp.capLead(S) : 0.45;
+    S.corQ = UFM.sp ? UFM.sp.crossQ(UFM.sp.takerOn(S, 'cor')) : 0.4;
+    form = (S.form || 1) * (1 + 0.03 * (S.capLead - 0.45));
     var att = 0, attW = 0, mid = 0, midW = 0, def = 0, defW = 0, gk = 45;
     S.on.forEach(function (o) {
       var p = g.players[o.pid];
@@ -3986,7 +4180,7 @@ window.UFM_NAMES = {
     // game state adjustments late on
     var vol = S.str.vol;
     var diff = (atk === 0 ? H.goals - Aw.goals : Aw.goals - H.goals);
-    if (Mx.min > 70 && diff < 0) vol *= 1.15; else if (Mx.min > 75 && diff > 0) vol *= 0.85;
+    if (Mx.min > 70 && diff < 0) vol *= 1.08 + 0.15 * (S.capLead || 0.45); else if (Mx.min > 75 && diff > 0) vol *= 0.85; // a leader drives the comeback
     if (live && R.chance(0.55)) { var hp = pickOn(S, CREATOR_W, A.PAS); if (hp) { Mx.ball = hp; if (R.chance(0.35)) ev(Mx, atk, 'pos', hp); } }
     if (R.f() < 0.5 * vol * D.str.expo * (atk === 0 ? 1 + Mx.homeAdv * 0.4 : 1)) {
       var g0 = S.goals;
@@ -4030,12 +4224,7 @@ window.UFM_NAMES = {
     if (roll < 0.0075) { penalty(Mx, atk); return; }
     if (roll < 0.0075 + pShot) { shot(Mx, atk, q, st); return; }
     roll = R.f();
-    if (roll < 0.22) { // corner
-      Mx.st.cor[atk]++;
-      if (live) ev(Mx, atk, 'corner', pickOn(S, CROSSER_W, A.CRO));
-      if (R.chance(0.27)) shot(Mx, atk, q, st, 'h');
-      return;
-    }
+    if (roll < 0.22) { corner(Mx, atk, q, st); return; }
     if (roll < T().offside(D)) { if (live) ev(Mx, atk, 'offside', pickOn(S, SHOOTER_W, A.SPD)); return; }
     if (live) {
       var a1 = pickOn(S, CREATOR_W, A.PAS), d1 = pickOn(D, { CB: 2, LB: 1.2, RB: 1.2, DM: 1.6, CM: 0.8 }, A.TAC);
@@ -4047,7 +4236,15 @@ window.UFM_NAMES = {
     }
   }
 
-  function shot(Mx, atk, q, st, forced) {
+  // v1.8: corners (and crossed free kicks) depend on the delivery of the taker
+  function setPieceTaker(S, role) { return UFM.sp ? UFM.sp.takerOn(S, role) : null; }
+  function corner(Mx, atk, q, st) {
+    var S = Mx.s[atk], tk = setPieceTaker(S, 'cor'), cq = UFM.sp ? UFM.sp.crossQ(tk) : 0.4;
+    Mx.st.cor[atk]++;
+    if (Mx.live) ev(Mx, atk, 'corner', tk ? tk.id : pickOn(S, CROSSER_W, A.CRO));
+    if (R.chance(0.27 * (0.7 + 0.6 * cq))) shot(Mx, atk, q, st, 'h', { by: tk ? tk.id : null, k: 0.85 + 0.3 * cq });
+  }
+  function shot(Mx, atk, q, st, forced, spq) {
     var S = Mx.s[atk], D = Mx.s[1 - atk], live = Mx.live;
     var type = forced;
     if (!type) {
@@ -4058,12 +4255,13 @@ window.UFM_NAMES = {
     var shooter = pickOn(S, type === 'h' ? HEADER_W : SHOOTER_W, type === 'h' ? A.HEA : A.SHO);
     if (!shooter) return;
     var assister = null;
-    if (type !== 'l' && R.chance(type === 'h' ? 0.9 : 0.72)) assister = pickOn(S, type === 'h' ? CROSSER_W : CREATOR_W, type === 'h' ? A.CRO : A.PAS, shooter);
+    if (spq && spq.by && spq.by !== shooter) assister = spq.by;
+    else if (type !== 'l' && R.chance(type === 'h' ? 0.9 : 0.72)) assister = pickOn(S, type === 'h' ? CROSSER_W : CREATOR_W, type === 'h' ? A.CRO : A.PAS, shooter);
     var sp = pl(shooter), gkid = gkOf(D), gk = pl(gkid);
     var skill = type === 'h' ? sp.at[A.HEA] - ((D.apt ? D.apt.cbHea : 72) - 72) * 0.4 : type === 'o' ? (sp.at[A.SHO] * 0.7 + sp.at[A.DRI] * 0.3) : sp.at[A.SHO];
     if (S.on.filter(function (o) { return o.pid === shooter; })[0].role === 'GK') skill = 20;
     var gkSkill = gk ? (gk.at[A.SST] * 0.7 + gk.at[A.CAT] * 0.3) * (0.75 + 0.25 * gk.fit / 100) : 40;
-    var pGoal = BASE_GOAL[type] * Math.exp((skill - gkSkill) / 30) * (0.9 + 0.2 * q) * (0.9 + 0.1 * sp.fit / 100) * (G().goalAdj || 1) * T().finishing(S);
+    var pGoal = BASE_GOAL[type] * Math.exp((skill - gkSkill) / 30) * (0.9 + 0.2 * q) * (0.9 + 0.1 * sp.fit / 100) * (G().goalAdj || 1) * T().finishing(S) * (spq ? spq.k : 1);
     var pTarget = Math.max(pGoal + 0.05, BASE_TARGET[type] * (0.85 + skill / 400));
     Mx.st.sh[atk]++;
     if (live && assister) ev(Mx, atk, type === 'h' ? 'cross' : 'pass', assister, shooter);
@@ -4111,6 +4309,10 @@ window.UFM_NAMES = {
     Mx.ball = null;
   }
 
+  function penChance(tp, gk) {
+    var sk = UFM.sp ? UFM.sp.penSkill(tp) : tp.at[A.SHO];
+    return U.clamp(0.75 + (sk - (gk ? gk.at[A.SST] * 0.8 + gk.at[A.CAT] * 0.2 : 50)) / 300, 0.5, 0.93);
+  }
   function penalty(Mx, atk) {
     var S = Mx.s[atk], D = Mx.s[1 - atk];
     var fouler = pickOn(D, { CB: 2, LB: 1.2, RB: 1.2, DM: 1, CM: 0.6, GK: 0.3 }, A.AGG);
@@ -4118,11 +4320,12 @@ window.UFM_NAMES = {
     if (Mx.live) ev(Mx, atk, 'pen_award', victim, fouler);
     Mx.st.fo[1 - atk]++;
     if (fouler && R.chance(0.35)) card(Mx, 1 - atk, fouler, R.chance(0.08));
-    var taker = S.on.slice().sort(function (a, b) { return pl(b.pid).at[A.SHO] - pl(a.pid).at[A.SHO]; })[0];
+    // v1.8: the chosen penalty taker (technique + experience under pressure)
+    var tk = setPieceTaker(S, 'pen');
+    var taker = tk ? tk.id : (S.on.slice().sort(function (a, b) { return pl(b.pid).at[A.SHO] - pl(a.pid).at[A.SHO]; })[0] || {}).pid;
     if (!taker) return;
-    taker = taker.pid;
     var gkid = gkOf(D), gk = pl(gkid);
-    var p = 0.76 + (pl(taker).at[A.SHO] - (gk ? gk.at[A.SST] : 50)) / 400;
+    var p = penChance(pl(taker), gk);
     Mx.st.sh[atk]++;
     if (R.f() < p) { Mx.st.sot[atk]++; goal(Mx, atk, taker, null, 'p'); }
     else if (R.chance(0.65)) { Mx.st.sot[atk]++; ev(Mx, atk, 'pen_save', taker, gkid); rate(D, gkid, 0.8); rate(S, taker, -0.5); }
@@ -4146,11 +4349,20 @@ window.UFM_NAMES = {
     }
     // dangerous free kick
     if (R.chance(0.12)) {
-      var taker = pickOn(O, CREATOR_W, A.SHO);
+      // v1.8: the chosen free-kick taker; four in ten are crossed into the box instead of a shot
+      var tk = setPieceTaker(O, 'fk');
+      var taker = tk ? tk.id : pickOn(O, CREATOR_W, A.SHO);
+      if (taker && R.chance(0.4)) {
+        var cq = UFM.sp ? UFM.sp.crossQ(pl(taker)) : 0.4;
+        if (Mx.live) ev(Mx, 1 - sd, 'fk_cross', taker);
+        if (R.chance(0.3 * (0.7 + 0.6 * cq))) shot(Mx, 1 - sd, U.sigmoid((O.str.att - X.str.def) / 14), sty(O), 'h', { by: taker, k: 0.85 + 0.3 * cq });
+        taker = null;
+      }
       if (taker) {
         var gkid = gkOf(X), gk = pl(gkid), tp = pl(taker);
         Mx.st.sh[1 - sd]++;
-        var pg = 0.065 * Math.exp((tp.at[A.SHO] - (gk ? gk.at[A.SST] : 50)) / 24);
+        var fs = UFM.sp ? UFM.sp.fkSkill(tp) : tp.at[A.SHO];
+        var pg = 0.06 * Math.exp((fs - (gk ? gk.at[A.SST] : 50)) / 20);
         if (R.f() < pg) { Mx.st.sot[1 - sd]++; goal(Mx, 1 - sd, taker, null, 'f'); }
         else if (R.chance(0.35)) { Mx.st.sot[1 - sd]++; if (Mx.live) ev(Mx, 1 - sd, 'fk_save', taker, gkid); rate(X, gkid, 0.15); }
         else if (Mx.live) ev(Mx, 1 - sd, 'fk_miss', taker);
@@ -4296,15 +4508,20 @@ window.UFM_NAMES = {
   }
   function shootout(Mx) {
     var sc = [0, 0], taken = [0, 0];
+    // v1.8: the chosen penalty taker goes first, then the best takers on the pitch
     var order = [0, 1].map(function (sd) {
-      return Mx.s[sd].on.slice().sort(function (a, b) { return pl(b.pid).at[A.SHO] - pl(a.pid).at[A.SHO]; }).map(function (o) { return o.pid; });
+      var S = Mx.s[sd], first = setPieceTaker(S, 'pen');
+      var sk = function (pid) { var q = pl(pid); return UFM.sp ? UFM.sp.penSkill(q) - (q.r === 'GK' ? 30 : 0) : q.at[A.SHO]; };
+      var list = S.on.slice().sort(function (a, b) { return sk(b.pid) - sk(a.pid); }).map(function (o) { return o.pid; });
+      if (first) list = [first.id].concat(list.filter(function (id) { return id !== first.id; }));
+      return list;
     });
     var gks = [gkOf(Mx.s[0]), gkOf(Mx.s[1])];
     var kicks = [];
     function kick(sd) {
       var list = order[sd]; var pid = list[taken[sd] % list.length];
       var gk = pl(gks[1 - sd]);
-      var p = 0.76 + (pl(pid).at[A.SHO] - (gk ? gk.at[A.SST] : 50)) / 450;
+      var p = penChance(pl(pid), gk) - 0.02; // more pressure in a shoot-out
       var ok = R.f() < p; if (ok) sc[sd]++;
       taken[sd]++;
       kicks.push([sd, pid, ok ? 1 : 0]);
@@ -4525,7 +4742,9 @@ window.UFM_NAMES = {
         var p = g.players[pid]; if (!p) return;
         if (X.subIn && X.subIn[pid]) p.s.sb++; else p.s.ap++;
         p.s.rt += X.rt[pid]; p.s.rn++;
-        p.mor = U.clamp(p.mor + (res > 0 ? 5 : res < 0 ? -5 : 1) + (X.rt[pid] >= 7.5 ? 2 : X.rt[pid] < 5.5 ? -2 : 0), 5, 100);
+        // v1.8: a good captain softens a defeat (-5 → about -3.5), a weak one does not
+        var lossHit = -5 + 2.4 * Math.max(0, (X.capLead || 0.45) - 0.2);
+        p.mor = U.clamp(p.mor + (res > 0 ? 5 : res < 0 ? lossHit : 1) + (X.rt[pid] >= 7.5 ? 2 : X.rt[pid] < 5.5 ? -2 : 0), 5, 100);
         if (+pid === Mx.mom) p.s.mom++;
         var oppGoals = sd === 0 ? f.ag : f.hg;
         var grp = M.ROLE_GROUP[p.r];
@@ -5214,6 +5433,9 @@ window.UFM_NAMES = {
     autoTraining();
     var weeks = days / 7;
     var games = UFM.dev ? UFM.dev.teamGames() : {};
+    // v1.8: the morale a squad settles at depends on its captain (65 with an average leader, up to ~69 / down to ~63)
+    var moraleBase = {};
+    if (UFM.sp) for (var tid in g.teams) { var ct = g.teams[tid]; if (!ct.squad.length) continue; var cp = UFM.sp.captainOf(ct); moraleBase[tid] = 65 + (cp ? 8 * (UFM.sp.leadership(cp) - 0.45) : 0); }
     for (var id in g.players) {
       var p = g.players[id];
       var inten = p.tr ? p.tr.i : 2;
@@ -5224,7 +5446,8 @@ window.UFM_NAMES = {
       } else {
         p.fit = Math.min(100, p.fit + RECOVERY[inten] * days);
       }
-      p.mor += (65 - p.mor) * Math.min(1, 0.015 * days);
+      var mBase = (p.t && moraleBase[p.t]) || 65;
+      p.mor += (mBase - p.mor) * Math.min(1, 0.015 * days);
       if (p.out && p.out.until <= g.date) delete p.out;
       train(p, weeks, inten, p.t ? games[p.t] : 0);
     }
@@ -7991,7 +8214,7 @@ window.UFM_NAMES = {
       el('div', { class: 'made-by' }, t('made_by'))
     ]));
     if (UFM.cloud && UFM.cloud.ready()) root.appendChild(el('div', { class: 'cloud-line', style: ui.abs({ position: 'absolute', left: '0', right: '0', bottom: '34px', textAlign: 'center', fontSize: '12.5px', color: '#cfe3ff' }) }, '☁ ' + t('cloud_on')));
-    root.appendChild(el('div', { class: 'title-foot' }, 'v1.7 · ' + t('foot_note')));
+    root.appendChild(el('div', { class: 'title-foot' }, 'v1.8 · ' + t('foot_note')));
   };
 
   function howTo() { ui.popup({ cls: 'wide left', title: t('how_title'), body: t('how_text'), buttons: [{ label: t('close'), cls: 'green', esc: true }] }); }
@@ -8480,6 +8703,11 @@ window.UFM_NAMES = {
     if (p.ret) kids.push(el('div', { class: 'ret-line' }, [ui.retIcon(p), ' ' + t('ret_card', { s: ui.seasonName(p.ret) })]));
     if (UFM.career.isBoardStar && UFM.career.isBoardStar(p.id)) kids.push(el('div', { class: 'ret-line star-line' }, '★ ' + t('bid_star')));
     if (p.nfs && p.t === G().userTeam) kids.push(el('div', { class: 'ret-line nfs-line' }, '🔒 ' + t('nfs_title')));
+    // v1.8: the club roles he has (captain, set pieces)
+    if (UFM.sp && p.t && p.t === G().userTeam) {
+      var rsum = UFM.sp.summary(G().teams[p.t]), mine = UFM.sp.ROLES.filter(function (r) { return rsum[r].p && rsum[r].p.id === p.id; });
+      if (mine.length) kids.push(el('div', { class: 'ret-line roles-line' }, '© ' + mine.map(function (r) { return t('role_' + r); }).join(' · ')));
+    }
     // development: how the player is evolving and his attitude (own players)
     var dv = p.t && p.t === G().userTeam && UFM.dev ? UFM.dev.note(p) : null;
     if (dv) kids.push(el('div', { class: 'dev-line ' + dv.k }, [el('span', null, t('dev_label') + ': '), el('b', null, t(dv.k)), el('span', { class: 'sub' }, ' · ' + t('att_label') + ': '), el('b', null, t(dv.att))]));
@@ -8548,6 +8776,7 @@ window.UFM_NAMES = {
       el('span', { style: { marginLeft: 'auto' }, class: 'sub' }, t('squad_count', { n: players.length, max: UFM.transfers.MAX_SQUAD }))]));
     var isAttr = A[sq.sort.toUpperCase()] !== undefined;
     var tb = el('table', { class: 'tbl' });
+    var capP = UFM.sp ? UFM.sp.captainOf(G().teams[G().userTeam]) : null, capId = capP ? capP.id : null;
     function th(key, label, cls) { return el('th', { class: 'sortable ' + (cls || '') + (sq.sort === key ? ' sorted' : ''), onclick: function () { sq.sort = key; ui.refresh(); } }, label); }
     tb.appendChild(el('tr', null, [th('no', '#', 'r'), th('name', t('a_name')), th('pos', t('a_pos')), th('age', t(ui.mobile ? 'a_age_s' : 'a_age'), 'c'), th('ovr', ui.mobile ? '★' : t('a_rating')), isAttr ? el('th', { class: 'c sorted' }, t('a_' + sq.sort).slice(0, 8)) : null, th('fit', t(ui.mobile ? 'a_fit_s' : 'a_fit')), th('val', t('a_value'), 'r m-hide'), el('th', null, '')]));
     players.forEach(function (p) {
@@ -8561,7 +8790,7 @@ window.UFM_NAMES = {
         isAttr ? el('td', { class: 'c b', style: { color: ui.attrColor(p.at[A[sq.sort.toUpperCase()]]) } }, String(Math.round(p.at[A[sq.sort.toUpperCase()]]))) : null,
         el('td', null, el('div', { style: { width: ui.mobile ? '34px' : '44px' } }, ui.bar(fit, 100, ui.fitColor(fit)))),
         el('td', { class: 'r m-hide' }, U.money(p.val)),
-        el('td', { style: { whiteSpace: 'nowrap' } }, [ui.status(p), p.ret ? ui.retIcon(p) : null, UFM.career.isBoardStar(p.id) ? el('span', { class: 'sq-flag star', title: t('obj_cat_star') }, '★') : null, p.listed ? el('span', { class: 'sq-flag', title: t('listed_title') }, t('listed_tag')) : null, p.nfs ? el('span', { class: 'sq-flag nfs', title: t('nfs_title') }, '🔒') : null, p.promise ? el('span', { class: 'sq-flag', style: { background: '#9cc4ff', color: '#0b2a6b' }, title: t('promise_title') }, '!') : null])
+        el('td', { style: { whiteSpace: 'nowrap' } }, [ui.status(p), p.ret ? ui.retIcon(p) : null, UFM.career.isBoardStar(p.id) ? el('span', { class: 'sq-flag star', title: t('obj_cat_star') }, '★') : null, p.listed ? el('span', { class: 'sq-flag', title: t('listed_title') }, t('listed_tag')) : null, p.nfs ? el('span', { class: 'sq-flag nfs', title: t('nfs_title') }, '🔒') : null, capId === p.id ? el('span', { class: 'sq-flag cap', title: t('role_cap') }, 'C') : null, p.promise ? el('span', { class: 'sq-flag', style: { background: '#9cc4ff', color: '#0b2a6b' }, title: t('promise_title') }, '!') : null])
       ]);
       tb.appendChild(tr);
     });
@@ -8838,9 +9067,12 @@ window.UFM_NAMES = {
     var sSel = el('select', { onchange: function () { E.s = +this.value; render(box, E, tm, opts); } });
     [0, 1, 2, 3, 4, 5, 6].forEach(function (i) { sSel.appendChild(el('option', { value: i, selected: E.s === i }, optTxt('s', i))); });
     var insBtn = el('button', { class: 'btn small gold ins-btn', onclick: function () { ui.sound('click'); ui.instructionsPopup(E, tm, function () { render(box, E, tm, opts); }); } }, '⚙ ' + t('instructions') + ': ' + ui.insSummary(E.ins));
+    // v1.8: captain and set-piece takers
+    var rolesBtn = E.mode === 'team' && tm.user ? el('button', { class: 'btn small roles-btn', title: t('roles_btn'), onclick: function () { ui.sound('click'); ui.rolesPopup(tm, function () { render(box, E, tm, opts); }, E); } }, '© ' + t(ui.mobile ? 'roles_btn' : 'roles_btn_s')) : null;
     box.appendChild(el('div', { class: 'tac-ctl' }, [
       el('label', { class: 'ctl' }, [t('formation'), fSel]), el('label', { class: 'ctl' }, [t('mentality'), mSel]), el('label', { class: 'ctl' }, [t('style'), sSel]), insBtn,
-      E.mode === 'match' ? el('span', { class: 'ctl', style: { marginLeft: 'auto', color: '#fff' } }, t('subs_left', { n: E.subsLeft - pendingIns(E).length })) : el('span', { style: { marginLeft: 'auto', fontSize: '12px' }, class: 'sub' }, t('style_help_' + E.s))
+      E.mode === 'match' ? el('span', { class: 'ctl', style: { marginLeft: 'auto', color: '#fff' } }, t('subs_left', { n: E.subsLeft - pendingIns(E).length })) : (rolesBtn && !ui.mobile ? rolesBtn : el('span', { style: { marginLeft: 'auto', fontSize: '12px' }, class: 'sub' }, t('style_help_' + E.s))),
+      rolesBtn && ui.mobile ? rolesBtn : null
     ]));
     var showAuto = E.mode === 'team' && tm.user;
     if (showAuto && ui.mobile) box.appendChild(autoToggles(function () { render(box, E, tm, opts); }));
@@ -8848,6 +9080,8 @@ window.UFM_NAMES = {
     var ban = boardSys ? ui.sysBanner(E.f) : null;
     if (ban) box.appendChild(ban);
     // pitch
+    var capId = null;
+    try { if (UFM.sp) { if (E.mode === 'match') capId = E.Mx.s[E.sd].cap; else { var saved0 = tm.tac.xi; tm.tac.xi = E.xi; var cp0 = UFM.sp.captainOf(tm); tm.tac.xi = saved0; capId = cp0 ? cp0.id : null; } } } catch (e) { capId = null; }
     var pitch = el('div', { class: 'pitch tac-pitch', style: ui.abs({ left: '12px', top: '120px', width: '380px', height: '540px' }) });
     pitch.innerHTML = ui.pitchLines();
     slots.forEach(function (sl, i) {
@@ -8857,6 +9091,7 @@ window.UFM_NAMES = {
       var topPct = ui.mobile ? (y * 0.86 + 1.5) : (y * 0.87 + 0.74);
       var pp = el('div', { class: 'pp' + (E.sel && E.sel.z === 'xi' && E.sel.i === i ? ' sel' : '') + (p ? '' : ' empty'), style: { left: x + '%', top: topPct + '%' }, onclick: function () { clickPos(box, E, tm, opts, { z: 'xi', i: i }); } });
       pp.appendChild(ui.shirtEl(tm, ui.mobile ? 34 : 40, p ? p.k : ''));
+      if (p && capId === p.id) pp.appendChild(el('span', { class: 'cap-badge', title: t('role_cap') }, 'C'));
       if (p) {
         var fit = Math.round(p.fit);
         pp.appendChild(el('div', { class: 'pn' }, ui.sname(p.n)));
@@ -8961,6 +9196,56 @@ window.UFM_NAMES = {
       done: function () { commit(); back(); }
     };
     render(box, E, tm, opts);
+  };
+
+  // ------------------------------------------------------------------ v1.8: captain and set-piece takers
+  ui.rolesPopup = function (tm, onDone, E) {
+    var SP = UFM.sp, g = G(), body = el('div', { class: 'roles-box' });
+    function xiNow() { return E ? E.xi : tm.tac.xi; }
+    function draw() {
+      body.innerHTML = '';
+      var saved = tm.tac.xi; tm.tac.xi = xiNow().slice();
+      var sum = SP.summary(tm);
+      tm.tac.xi = saved;
+      var inXI = {}; xiNow().forEach(function (id) { if (id) inXI[id] = 1; });
+      body.appendChild(el('div', { class: 'sub roles-intro' }, t('roles_intro')));
+      SP.ROLES.forEach(function (r) {
+        var cur = sum[r], p = cur.p;
+        var cands = tm.squad.map(function (id) { return g.players[id]; }).filter(function (q) { return q && (r === 'cap' || q.r !== 'GK'); })
+          .sort(function (a, b) { return SP.score(r, b) - SP.score(r, a); });
+        var sel = el('select', { onchange: function () { pick(r, this.value); } });
+        var bestXI = cands.filter(function (q) { return inXI[q.id]; })[0];
+        sel.appendChild(el('option', { value: '', selected: cur.auto }, t('role_auto', { p: bestXI ? bestXI.n : '-' })));
+        cands.forEach(function (q, i) {
+          sel.appendChild(el('option', { value: q.id, selected: !cur.auto && p && p.id === q.id },
+            q.n + ' · ' + t('rn_' + q.r).slice(0, 14) + ' · ' + t('age_n', { n: q.a }) + ' — ' + Math.round(SP.score(r, q)) + (i === 0 ? ' ★' : '') + (inXI[q.id] ? '' : ' *')));
+        });
+        var est = SP.estimate(r, p), val = p ? Math.round(SP.score(r, p)) : 0;
+        var tone = r === 'cap' ? (est >= 0.65 ? 'good' : est < 0.4 ? 'bad' : 'mid') : r === 'pen' ? (est >= 0.77 ? 'good' : est < 0.71 ? 'bad' : 'mid') : r === 'fk' ? (est >= 0.065 ? 'good' : est < 0.035 ? 'bad' : 'mid') : (est >= 0.65 ? 'good' : est < 0.35 ? 'bad' : 'mid');
+        var effect = r === 'cap' ? t('role_cap_eff', { v: val, e: Math.round(SP.experience(p || { a: 20, s: null }) * 100) }) :
+          r === 'pen' ? t('role_pen_eff', { v: Math.round(est * 100) }) : r === 'fk' ? t('role_fk_eff', { v: (est * 100).toFixed(1) }) : t('role_cor_eff', { v: Math.round(est * 100) });
+        var row = el('div', { class: 'role-row ' + tone }, [
+          el('div', { class: 'role-head' }, [el('b', null, t('role_' + r)), el('div', { class: 'sub' }, t('role_' + r + '_h'))]),
+          sel,
+          el('div', { class: 'role-eff' }, [el('span', { class: 'dot' }), el('span', null, [p ? (p.n + ': ' + effect) : '—', !inXI[p && p.id] && p && r !== 'cap' ? el('span', { class: 'sub' }, ' · ' + t('role_not_xi')) : null])])
+        ]);
+        body.appendChild(row);
+      });
+    }
+    function pick(r, pid) {
+      if (r === 'cap' && pid) {
+        var ch = SP.capChange(tm, +pid), np = g.players[pid];
+        var msg = [];
+        if (ch.old) msg.push(t('cap_q_old', { p: ch.old.n }));
+        msg.push(t('cap_q_new', { p: np.n }));
+        if (ch.weak) msg.push(t('cap_q_weak', { p: np.n }));
+        ui.confirm(msg.join(' '), function () { SP.setRole('cap', pid); UFM.save.autosave(); setTimeout(draw, 30); }, function () { setTimeout(draw, 30); }, t('role_cap'));
+        return;
+      }
+      SP.setRole(r, pid || null); UFM.save.autosave(); draw();
+    }
+    draw();
+    return ui.popup({ title: t('roles_title'), cls: 'wide roles-pop', body: body, buttons: [{ label: t('done'), cls: 'green', esc: true, fn: function () { if (onDone) onDone(); } }] });
   };
 
   // ------------------------------------------------------------------ team instructions (pressing, line, tempo, width, counter)
@@ -9759,7 +10044,7 @@ window.UFM_NAMES = {
       ])]));
     });
     mid.appendChild(el('div', { class: 'pc-sec', style: { textAlign: 'center', paddingTop: '16px' } }, t('your_tactics')));
-    mid.appendChild(el('div', { class: 'c', style: { fontSize: '14px', lineHeight: '1.6' } }, [ui.fname(ut.tac.f), el('br'), t('m' + ut.tac.m), el('br'), t('s' + ut.tac.s), el('br'), el('span', { class: 'sub', style: { fontSize: '12.5px' } }, ui.insSummary(ut.tac.ins))]));
+    mid.appendChild(el('div', { class: 'c', style: { fontSize: '14px', lineHeight: '1.5' } }, [ui.fname(ut.tac.f) + ' · ' + t('m' + ut.tac.m), el('br'), t('s' + ut.tac.s), el('br'), el('span', { class: 'sub', style: { fontSize: '12.5px' } }, ui.insSummary(ut.tac.ins))]));
     var oppT = home.id === me ? away : home;
     mid.appendChild(el('div', { class: 'pm-scout' }, [el('b', null, t('scout_title') + ': '), t('scout_line', { t: oppT.short, f: ui.fname(oppT.tac.f), i: ui.insSummary(oppT.tac.ins).toLowerCase() })]));
     var gap = ui.planGap(ut);
@@ -9770,7 +10055,15 @@ window.UFM_NAMES = {
     if (rl.length) mid.appendChild(el('div', { class: 'pm-scout pm-auto' }, '🔄 ' + t('pm_rot', { o: ui.sname(g.players[rl[0].o].n), f: rl[0].f, i: ui.sname(g.players[rl[0].i].n) }) + (rl.length > 1 ? ' · ' + t('pm_rot_more', { n: rl.length - 1 }) : '')));
     if (gap !== null && !autoOk) mid.appendChild(el('div', { class: 'pm-scout ' + (gap < 0.04 ? 'good' : 'bad') }, gap < 0.04 ? t('pm_plan_ok') : t('pm_plan_gap', { v: gap.toFixed(2) })));
 
-    mid.appendChild(el('div', { class: 'c', style: { paddingTop: '6px' } }, el('button', { class: 'btn small gold', onclick: function () { ui.sound('click'); ui.teamInstructions(ut, function () { ui.refresh(); }); } }, '⚙ ' + t('instructions'))));
+    // v1.8: captain and set-piece takers
+    if (UFM.sp) {
+      var rs = UFM.sp.summary(ut), nm = function (r) { return rs[r].p ? ui.sname(rs[r].p.n) : '-'; };
+      mid.appendChild(el('div', { class: 'pm-scout pm-roles' }, '© ' + nm('cap') + ' · ' + t('role_pen_s') + ': ' + nm('pen') + ' · ' + t('role_cor_s') + ': ' + nm('cor') + ' · ' + t('role_fk_s') + ': ' + nm('fk')));
+    }
+    mid.appendChild(el('div', { class: 'c pm-tbtns', style: { paddingTop: '6px' } }, [
+      el('button', { class: 'btn small gold', onclick: function () { ui.sound('click'); ui.teamInstructions(ut, function () { ui.refresh(); }); } }, '⚙ ' + t('instructions')),
+      UFM.sp ? el('button', { class: 'btn small roles-btn', onclick: function () { ui.sound('click'); ui.rolesPopup(ut, function () { ui.refresh(); }); } }, '© ' + t('roles_btn_s')) : null
+    ]));
     var slots0 = M.FORMATIONS[ut.tac.f], gkIdx = slots0.map(function (x) { return x[0]; }).indexOf('GK');
     var gkP = g.players[ut.tac.xi[gkIdx]];
     if (!gkP || gkP.r !== 'GK') mid.appendChild(el('div', { class: 'c bad b', style: { fontSize: '13px', padding: '10px 12px 0' } }, t('no_keeper')));
