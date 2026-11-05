@@ -2353,6 +2353,27 @@ window.UFM_NAMES = {
 
 </script>
 <script>
+/* Ultimate Football Management 26-27 — texts added in v1.9 (longer careers, slower decline, academy talent) */
+(function (W) {
+  'use strict';
+  var S = W.UFM.i18n.S;
+  var X = {
+    en: {
+      n_youth_wonder: 'Academy: a big talent, {p} ({pos}), joins the first team squad',
+      n_v19_careers: 'New: careers last longer (good players play on until 38-40) and decline more slowly. Retirements were decided again with the new rules ({n} of your players carry on).'
+    },
+    ro: {
+      n_youth_wonder: 'Academia: un mare talent, {p} ({pos}), a fost promovat la prima echipă',
+      n_v19_careers: 'Nou: carierele sunt mai lungi (jucătorii buni joacă până la 38-40 de ani) și declinul e mai lent. Retragerile au fost decise din nou după regulile noi ({n} jucători din lotul tău continuă).'
+    }
+  };
+  X.en.how_text = S.en.how_text.replace('<p style="text-align:center"><b>Made by Artur with ♥️</b></p>', '') + '<p><b>Careers (v1.9).</b> Players who are still good enough for their club play on until 38-40 (keepers a little longer); those who are only squad fillers stop around 35-37. After their peak they lose their level slowly. Most academy youngsters are ordinary or useful squad players; only about 15 real talents (potential 85+) come through in the whole world each summer, mostly at big clubs and clubs with a good academy. The game keeps the overall level of the ratings steady over the seasons.</p><p style="text-align:center"><b>Made by Artur with ♥️</b></p>';
+  X.ro.how_text = S.ro.how_text.replace('<p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>', '') + '<p><b>Cariere (v1.9).</b> Jucătorii care încă sunt buni pentru clubul lor joacă până la 38-40 de ani (portarii puțin mai mult); cei care sunt doar rezerve se retrag pe la 35-37. După vârf își pierd nivelul încet. Cei mai mulți juniori sunt obișnuiți sau jucători de lot; în fiecare vară apar în toată lumea doar ~15 talente adevărate (potențial 85+), mai ales la cluburile mari și la cele cu academie bună. Jocul ține nivelul general al ratingurilor constant de la un sezon la altul.</p><p style="text-align:center"><b>Făcut de Artur cu ♥️</b></p>';
+  Object.keys(X).forEach(function (l) { for (var k in X[l]) S[l][k] = X[l][k]; });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* Ultimate Football Management 26-27 — utilities */
 (function (W) {
   'use strict';
@@ -2730,7 +2751,7 @@ window.UFM_NAMES = {
       stats: { streakW: 0, streakCS: 0, seasons: 0, totalSpent: 0, bestWin: 0 },
       opts: { speed: 2, alerts: { ht: true, goal: true, inj: true, red: true, yel: false }, msgs: 'full' },
       score: 0, pendingOffers: [], lastResults: null, log: [],
-      auto: { ins: true, rot: true, tr: true } // v1.6: the assistant's plan and the rotation of tired players; v1.7: training
+      v19: 1, auto: { ins: true, rot: true, tr: true } // v1.6: the assistant's plan and the rotation of tired players; v1.7: training
     };
     var f = DB.teamFields;
     var byIdx = [];
@@ -2782,6 +2803,8 @@ window.UFM_NAMES = {
     UFM.season.addNews('welcome', { team: ut.name });
     G.mgr = { rep: Math.max(10, ut.rep - 5), clubs: [ut.id], sacked: 0 };
     UFM.career.announceRetirements(G.season, 1);
+    // v1.9: the level of the ratings at the start (kept through the seasons, see season.balance)
+    if (UFM.season.ratingStats) G.bal = { ref: UFM.season.ratingStats(), dev: 1, pot: 0 };
     UFM.career.noteExpectations();
     UFM.career.setObjectives({ adopt: true });
     return G;
@@ -5236,7 +5259,7 @@ window.UFM_NAMES = {
       var p = all[ids[(R.f() * ids.length) | 0]];
       if (!p || p.t === buyer.id || M.ROLE_GROUP[p.r] !== grp) continue;
       if (p.t && g.teams[p.t].user) continue;
-      if (p.a > 32 || p.inj > 20) continue;
+      if (p.a > 34 || p.inj > 20) continue; // v1.9: experienced players are worth signing for longer
       var gain = M.slotRating(p, weakest) - wv;
       if (gain < 2) continue;
       var price = p.t ? askingPrice(p) * (0.95 + R.f() * 0.2) : 0;
@@ -5298,7 +5321,9 @@ window.UFM_NAMES = {
   }
   function trimSquad(t) {
     var g = G();
-    var sq = t.squad.map(function (id) { return g.players[id]; }).sort(function (a, b) { return (a.ovr - a.a * 0.2) - (b.ovr - b.a * 0.2); });
+    // v1.9: clubs keep their promising youngsters and let the fading veterans go first
+    var keep = function (p) { return p.ovr + (p.a <= 23 ? Math.max(0, p.pot - p.ovr) * 0.6 : 0) - Math.max(0, p.a - 32) * 1.0; };
+    var sq = t.squad.map(function (id) { return g.players[id]; }).sort(function (a, b) { return keep(a) - keep(b); });
     while (t.squad.length > 30 && sq.length) {
       var p = sq.shift();
       if (t.tac.xi.indexOf(p.id) >= 0) continue;
@@ -5323,7 +5348,9 @@ window.UFM_NAMES = {
         var lvl = Math.round(t.base.ovr - 6 + R.gauss() * 3);
         var roles = ['GK', 'CB', 'CB', 'LB', 'RB', 'CM', 'CM', 'DM', 'AM', 'LW', 'RW', 'ST'];
         var role = R.pick(roles);
-        var np = M.genPlayer(t.country === 'FRA' || t.country === 'NED' || t.country === 'POR' ? 'INT' : t.country, role, U.clamp(lvl, 50, 78), R.int(17, 21), U.clamp(lvl + R.int(4, 14), 55, 92), t.id);
+        // v1.9: young fill-ins are mostly ordinary (only now and then a real prospect)
+        var npPot = R.chance(0.15) ? lvl + R.int(5, 11) : lvl + R.int(-1, 5);
+        var np = M.genPlayer(t.country === 'FRA' || t.country === 'NED' || t.country === 'POR' ? 'INT' : t.country, role, U.clamp(lvl, 50, 78), R.int(17, 21), U.clamp(npPot, 55, 92), t.id);
         g.players[np.id] = np; t.squad.push(np.id);
         var used = {}; t.squad.forEach(function (id) { used[g.players[id].k] = 1; }); var k = 20; while (used[k]) k++; np.k = k;
       }
@@ -5704,6 +5731,7 @@ window.UFM_NAMES = {
     if (UFM.career && g.obj) { sum.verdict = UFM.career.seasonVerdict(sum); g.honours[g.honours.length - 1].fired = sum.verdict.fired; }
     // players: age, decline, retire, youth
     sum.retired = agePlayers();
+    balance();
     youthIntake();
     UFM.career.announceRetirements(g.season + 1, 1);
     // AI cash
@@ -5837,8 +5865,9 @@ window.UFM_NAMES = {
       M.refresh(p);
       p.ovrS = p.ovr;
       // retirement: club players announce it a season in advance; free agents may stop at any time
-      var go = (p.ret && p.ret <= g.season) || p.a >= 41;
-      if (!go && !p.t) go = R.f() < UFM.career.retireChance(p, p.a) + (p.a >= 31 ? 0.4 : 0);
+      var go = (p.ret && p.ret <= g.season) || p.a >= 42;
+      // without a club a career ends sooner (v1.9: from 32-33 on, and ordinary players drift out of football)
+      if (!go && !p.t) go = R.f() < UFM.career.retireChance(p, p.a) + (p.a >= 34 ? 0.3 : p.a >= 32 ? 0.12 : p.a >= 24 && p.ovr < 62 ? 0.2 : 0);
       if (go) {
         retired.push({ n: p.n, t: p.t, ovr: p.ovr, a: p.a });
         if (p.t) { var t = g.teams[p.t]; t.squad = t.squad.filter(function (x) { return x !== p.id; }); t.tac.xi = t.tac.xi.map(function (x) { return x === p.id ? null : x; }); t.tac.sub = (t.tac.sub || []).filter(function (x) { return x !== p.id; }); }
@@ -5846,9 +5875,58 @@ window.UFM_NAMES = {
         delete g.players[id];
       }
     });
+    // v1.9: the pool of players without a club stays a sensible size (the least wanted ones leave football)
+    var FREE_MAX = 650;
+    if (g.freeAgents.length > FREE_MAX) {
+      var worth = function (p) { return p.ovr + (p.a <= 23 ? Math.max(0, p.pot - p.ovr) * 0.5 : 0) - Math.max(0, p.a - 30) * 1.5; };
+      var fa = g.freeAgents.map(function (id) { return g.players[id]; }).filter(Boolean).sort(function (a, b) { return worth(a) - worth(b); });
+      var drop = {};
+      fa.slice(0, g.freeAgents.length - FREE_MAX).forEach(function (p) { drop[p.id] = 1; delete g.players[p.id]; });
+      g.freeAgents = g.freeAgents.filter(function (id) { return !drop[id] && g.players[id]; });
+    }
     return retired;
   }
 
+  // v1.9: rating balance — the level of the best players is measured every summer and compared with the start
+  // of the game; when the world gets weaker young players develop a little faster and the academies produce a
+  // little more talent (and the other way round), so the ratings stay about where they are in the real world
+  function ratingStats() {
+    var g = G(), v = [], y = [], p85 = 0;
+    for (var id in g.players) {
+      var p = g.players[id]; if (!p.t) continue;
+      v.push(p.ovr);
+      if (p.a <= 24) y.push(p.ovr);
+      if (p.a <= 21 && p.pot >= 85) p85++;
+    }
+    v.sort(function (a, b) { return b - a; }); y.sort(function (a, b) { return b - a; });
+    function mean(a) { var s = 0; a.forEach(function (x) { s += x; }); return a.length ? s / a.length : 0; }
+    return { top: mean(v.slice(0, 1500)), y: mean(y.slice(0, 800)), p85: p85, n85: v.filter(function (x) { return x >= 85; }).length, n80: v.filter(function (x) { return x >= 80; }).length, n75: v.filter(function (x) { return x >= 75; }).length };
+  }
+  function balance() {
+    var g = G(), cur = ratingStats();
+    if (!g.bal || !g.bal.ref || g.bal.ref.n75 === undefined) g.bal = { ref: cur };
+    var b = g.bal, eY = b.ref.y - cur.y, eT = b.ref.top - cur.top;
+    // young players develop a little faster when the coming generation is weaker than at the start (and slower when stronger)
+    b.dev = U.clamp(1 + 0.06 * eY + 0.03 * eT, 0.85, 1.4);
+    b.pot = U.clamp(0.5 * eY, -3, 4);
+    // the number of real talents (potential 85+) the academies of the world produce this summer
+    b.elite = Math.round(U.clamp(15 + 0.15 * (b.ref.n85 - cur.n85), 6, 30));
+    // when the level of the best 1500 players drops, the young players (23 or younger) still developing get a
+    // little more room to grow; nothing happens while the level holds
+    var e75 = b.ref.n75 ? (b.ref.n75 - cur.n75) / b.ref.n75 : 0;
+    b.drift = U.clamp(0.5 * eT + 5 * e75, 0, 2);
+    if (b.drift > 0) {
+      for (var id in g.players) {
+        var p = g.players[id];
+        if (!p.t || p.a > 23 || p.pot >= 93) continue;
+        var add = Math.floor(b.drift) + (R.f() < b.drift % 1 ? 1 : 0);
+        if (add) p.pot = Math.min(93, p.pot + add);
+      }
+    }
+    b.cur = cur;
+    return b;
+  }
+  var YTH = { ovr: 16.5, talent: 0.12, good: 0.3 };
   function youthIntake() {
     var g = G();
     Object.keys(g.teams).forEach(function (id) {
@@ -5857,10 +5935,14 @@ window.UFM_NAMES = {
       for (var i = 0; i < n; i++) {
         var role = R.pick(['GK', 'CB', 'CB', 'LB', 'RB', 'DM', 'CM', 'CM', 'AM', 'LM', 'RM', 'LW', 'RW', 'ST', 'ST']);
         // academy level (0..4): better youngsters and a better chance of a real talent
+        // v1.9: most academy players are ordinary, some will be useful squad players, few are real talents
         var base = t.base.ovr, lvl = UFM.events.fac(t).yth;
-        var ovr = Math.round(base - 17.5 + lvl * 0.8 + R.gauss() * 4);
-        var pot = Math.round(base - 5 + lvl * 1.5 + R.gauss() * 6);
-        if (R.chance(0.015 + lvl * 0.006)) pot = Math.round(base + R.int(3, 11));
+        var ovr = Math.round(base - YTH.ovr + lvl * 0.7 + R.gauss() * 3.5);
+        var bl = g.bal || { pot: 0 };
+        var rr = R.f(), pTalent = YTH.talent + lvl * 0.012, pGood = pTalent + YTH.good + lvl * 0.03;
+        var pot = Math.round(bl.pot || 0) + (rr < pTalent ? Math.round(base + 1 + R.gauss() * 2.5)  // a talent: about the club's level
+          : rr < pGood ? Math.round(base - 4 + R.gauss() * 3)                // a useful squad player one day
+          : Math.round(base - 10 + R.gauss() * 4));                          // an ordinary youngster
         var country = ['ENG', 'ESP', 'ITA', 'GER', 'ROU'].indexOf(t.country) >= 0 ? t.country : 'INT';
         var p = M.genPlayer(country, role, U.clamp(ovr, 45, 72), R.int(16, 18), U.clamp(pot, ovr + 4, 93), t.id);
         var used = {}; t.squad.forEach(function (x) { used[g.players[x].k] = 1; });
@@ -5871,6 +5953,20 @@ window.UFM_NAMES = {
       if (t.squad.length > 34 && !t.user) UFM.transfers.trimSquad(t);
       if (t.squad.length < 20) UFM.transfers.fillSquad(t);
     });
+    // v1.9: only a few real talents (potential 85+) come through each summer, mostly at the big clubs and
+    // at clubs with a good academy; their number keeps the world's top level steady over the years
+    var nE = (g.bal && g.bal.elite) || 15, teams = Object.keys(g.teams).map(function (id) { return g.teams[id]; }).filter(function (t) { return t.squad.length < 36; });
+    for (var e = 0; e < nE && teams.length; e++) {
+      var t = R.weighted(teams, function (x) { return Math.pow(Math.max(10, x.rep), 2.2) * (1 + 0.4 * UFM.events.fac(x).yth); });
+      var role = R.pick(['GK', 'CB', 'CB', 'LB', 'RB', 'DM', 'CM', 'CM', 'AM', 'LM', 'RM', 'LW', 'RW', 'ST', 'ST']);
+      var country = ['ENG', 'ESP', 'ITA', 'GER', 'ROU'].indexOf(t.country) >= 0 ? t.country : 'INT';
+      var pot = 85 + Math.floor(R.f() * R.f() * 9);
+      var p = M.genPlayer(country, role, U.clamp(Math.round(t.base.ovr - 15 + R.gauss() * 3), 50, 70), R.int(16, 17), pot, t.id);
+      var used = {}; t.squad.forEach(function (x) { used[g.players[x].k] = 1; });
+      var k = 30; while (used[k]) k++; p.k = k;
+      g.players[p.id] = p; t.squad.push(p.id);
+      if (t.user) addNews('youth_wonder', { p: p.n, pos: p.r });
+    }
   }
 
   // relegated clubs cannot keep their best players: top-flight clubs buy them in the summer
@@ -5942,7 +6038,7 @@ window.UFM_NAMES = {
     addNews: addNews, ticker: ticker, userNextFixture: userNextFixture, userFixtures: userFixtures,
     passDays: passDays, advanceTo: advanceTo, continueGame: continueGame, finishUserDay: finishUserDay,
     playDay: playDay, dayDone: dayDone, prepareTeam: prepareTeam, endSeason: endSeason, newSeason: newSeason, TRAIN_SETS: TRAIN_SETS,
-    autoTraining: autoTraining, bestFocus: bestFocus
+    autoTraining: autoTraining, bestFocus: bestFocus, YTH: YTH, balance: balance, ratingStats: ratingStats
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -6014,12 +6110,15 @@ window.UFM_NAMES = {
     var inten = p.tr ? p.tr.i : 2;
     grow *= playFactor(playShare(p, teamGames)) * perfFactor(p) * TRAIN_F[inten] * (0.7 + 0.6 * traits(p).pr) * (0.92 + 0.05 * facility(t, 'tr')) * seasonRoll(p, G().season);
     if (p.inj > 0) grow *= 0.25;
+    grow *= (G().bal && G().bal.dev) || 1; // v1.9: keeps the world's ratings level over the seasons (see season.balance)
     return Math.min(grow, 9);
   }
+  var DEC = { a: 0.2, b: 0.02 };
   function declinePerSeason(p) {
     var tr = traits(p), yp = p.a + 0.5 - tr.pk;
     if (yp <= 0) return 0;
-    var d = (0.3 * yp + 0.05 * yp * yp) * (1.3 - 0.6 * tr.pr);
+    // v1.9: a slower decline (about two thirds of before): a good player keeps a decent level until 36-38
+    var d = (DEC.a * yp + DEC.b * yp * yp) * (1.3 - 0.6 * tr.pr);
     if (p.inj > 20) d *= 1.3;
     if (!p.t) d *= 1.2;
     return Math.min(d, 7);
@@ -6104,7 +6203,7 @@ window.UFM_NAMES = {
     return { k: key, att: att, net: Math.round(net * 10) / 10 };
   }
 
-  UFM.dev = { traits: traits, weekly: weekly, teamGames: teamGames, seasonEnd: seasonEnd, note: note, growthPerSeason: growthPerSeason, declinePerSeason: declinePerSeason, applyDelta: applyDelta };
+  UFM.dev = { DEC: DEC, traits: traits, weekly: weekly, teamGames: teamGames, seasonEnd: seasonEnd, note: note, growthPerSeason: growthPerSeason, declinePerSeason: declinePerSeason, applyDelta: applyDelta };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -6509,12 +6608,20 @@ window.UFM_NAMES = {
   }
 
   // ------------------------------------------------------------------ retirements announced a season in advance
+  // v1.9: longer careers — most players stop between 37 and 40 (keepers a year or two later),
+  // the weaker ones earlier and the ones still playing at a high level a little later
+  var RET = { 34: 0.03, 35: 0.05, 36: 0.09, 37: 0.16, 38: 0.28, 39: 0.45, 40: 0.7 };
   function retireChance(p, age) {
-    var pr = 0;
-    if (age >= 34) pr = 0.25 + (age - 34) * 0.18;
-    if (age >= 32 && p.ovr < 62) pr += 0.3;
-    if (age >= 40) pr = 1;
-    return pr;
+    var a = age - (p.r === 'GK' ? 1.5 : 0);
+    var pr = a >= 41 ? 1 : a < 34 ? 0 : (RET[Math.floor(a)] || 0);
+    if (age >= 33 && p.ovr < 60) pr += 0.15;
+    else if (age >= 33 && p.ovr < 66) pr += 0.05;
+    // still good enough for his club → plays on; only a squad filler now → stops sooner
+    var t = p.t ? G().teams[p.t] : null, lvl = t && t.base ? t.base.ovr : p.ovr;
+    if (age >= 34 && p.ovr < lvl - 4) pr += (age >= 36 ? 0.15 : 0.06) + (p.ovr < lvl - 8 ? 0.08 : 0);
+    else if (p.ovr >= lvl - 2 && a < 41) pr *= 0.6;
+    if (p.ovr >= 78 && a < 41) pr *= 0.75;
+    return Math.min(1, pr);
   }
   // decide who will retire at the end of `season`; age = the age the player will have at that moment
   function announceRetirements(season, ageOffset, quiet) {
@@ -6944,7 +7051,7 @@ window.UFM_NAMES = {
       var role = R.pick(['CB', 'LB', 'RB', 'DM', 'CM', 'AM', 'LW', 'RW', 'ST', 'ST', 'GK']);
       var ovr = Math.round(U.clamp(t.base.ovr - 12 + R.gauss() * 3, 48, 74));
       var country = ['ENG', 'ESP', 'ITA', 'GER', 'ROU'].indexOf(t.country) >= 0 ? t.country : 'INT';
-      var p = M.genPlayer(country, role, ovr, R.int(16, 17), U.clamp(Math.round(t.base.ovr + 6 + R.f() * 8), ovr + 8, 94), t.id);
+      var p = M.genPlayer(country, role, ovr, R.int(16, 17), U.clamp(Math.round(t.base.ovr + 4 + R.f() * 7), ovr + 8, 92), t.id);
       var used = {}; t.squad.forEach(function (x) { used[g.players[x].k] = 1; }); var k = 40; while (used[k]) k++; p.k = k;
       g.players[p.id] = p; t.squad.push(p.id);
       push({ k: 'youth_star', p: { p: p.n, pos: UFM.i18n.t('rn_' + p.r) } });
@@ -7420,6 +7527,17 @@ window.UFM_NAMES = {
       if (UFM.career.fixStarSystems) { try { UFM.career.fixStarSystems(); } catch (e) { /* keep the old objectives */ } }
     }
     // v1.6: the assistant's instructions and the rotation of tired players, switched on once for older saves
+    // v1.9: longer careers — retirements announced under the old rules are decided again with the new ones
+    if (!o.v19 && UFM.career && UFM.career.retireChance) {
+      var kept = 0;
+      Object.keys(o.players).forEach(function (id) {
+        var p = o.players[id];
+        if (!p.ret || p.ret !== o.season) return;
+        if (UFM.util.R.f() >= UFM.career.retireChance(p, p.a + 1)) { delete p.ret; if (p.t === o.userTeam) kept++; }
+      });
+      o.v19 = 1;
+      if (UFM.season && o.news) UFM.season.addNews('v19_careers', { n: kept });
+    }
     // v1.7: automatic training, switched on once
     if (o.auto && o.auto.tr === undefined) { o.auto.tr = true; if (UFM.season && o.news) UFM.season.addNews('v17_auto'); }
     if (!o.auto) {
@@ -8214,7 +8332,7 @@ window.UFM_NAMES = {
       el('div', { class: 'made-by' }, t('made_by'))
     ]));
     if (UFM.cloud && UFM.cloud.ready()) root.appendChild(el('div', { class: 'cloud-line', style: ui.abs({ position: 'absolute', left: '0', right: '0', bottom: '34px', textAlign: 'center', fontSize: '12.5px', color: '#cfe3ff' }) }, '☁ ' + t('cloud_on')));
-    root.appendChild(el('div', { class: 'title-foot' }, 'v1.8 · ' + t('foot_note')));
+    root.appendChild(el('div', { class: 'title-foot' }, 'v1.9 · ' + t('foot_note')));
   };
 
   function howTo() { ui.popup({ cls: 'wide left', title: t('how_title'), body: t('how_text'), buttons: [{ label: t('close'), cls: 'green', esc: true }] }); }
